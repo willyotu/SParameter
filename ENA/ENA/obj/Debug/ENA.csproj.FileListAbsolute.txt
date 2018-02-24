@@ -1,0 +1,23 @@
+c:\users\wilattoh\documents\visual studio 2015\Projects\ENA\ENA\obj\Debug\ENA.csprojResolveAssemblyReference.cache
+c:\users\wilattoh\documents\visual studio 2015\Projects\ENA\ENA\obj\Debug\ENA.ENAForm.resources
+c:\users\wilattoh\documents\visual studio 2015\Projects\ENA\ENA\obj\Debug\ENA.ENAorm.resources
+c:\users\wilattoh\documents\visual studio 2015\Projects\ENA\ENA\obj\Debug\ENA.csproj.GenerateResource.Cache
+c:\users\wilattoh\documents\visual studio 2015\Projects\ENA\ENA\bin\Debug\ENA.exe.config
+c:\users\wilattoh\documents\visual studio 2015\Projects\ENA\ENA\bin\Debug\ENA.exe
+c:\users\wilattoh\documents\visual studio 2015\Projects\ENA\ENA\bin\Debug\ENA.pdb
+c:\users\wilattoh\documents\visual studio 2015\Projects\ENA\ENA\bin\Debug\AgN99xx_NA_A_06_23.dll
+c:\users\wilattoh\documents\visual studio 2015\Projects\ENA\ENA\bin\Debug\AgN99xx_NA_A_06_23.xml
+c:\users\wilattoh\documents\visual studio 2015\Projects\ENA\ENA\obj\Debug\ENA.exe
+c:\users\wilattoh\documents\visual studio 2015\Projects\ENA\ENA\obj\Debug\ENA.pdb
+C:\Users\wilattoh\Desktop\ENA\ENA\bin\Debug\ENA.exe.config
+C:\Users\wilattoh\Desktop\ENA\ENA\obj\Debug\ENA.exe
+C:\Users\wilattoh\Desktop\ENA\ENA\obj\Debug\ENA.pdb
+C:\Users\wilattoh\Desktop\ENA\ENA\bin\Debug\ENA.exe
+C:\Users\wilattoh\Desktop\ENA\ENA\bin\Debug\ENA.pdb
+C:\Users\wilattoh\Desktop\ENA\ENA\bin\Debug\AgN99xx_NA_A_06_23.xml
+C:\Users\wilattoh\Desktop\ENA\ENA\obj\Debug\ENA.csprojResolveAssemblyReference.cache
+C:\Users\wilattoh\Desktop\ENA\ENA\obj\Debug\ENA.ENAForm.resources
+C:\Users\wilattoh\Desktop\ENA\ENA\obj\Debug\ENA.StimulusSettingsForm.resources
+C:\Users\wilattoh\Desktop\ENA\ENA\obj\Debug\ENA.csproj.GenerateResource.Cache
+C:\Users\wilattoh\Desktop\ENA\ENA\bin\Debug\AgN99xx_NA_A_06_23.dll
+C:\Users\wilattoh\Desktop\ENA\ENA\obj\Debug\ENA.Startup.resources
