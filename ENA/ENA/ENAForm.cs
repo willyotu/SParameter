@@ -61,11 +61,11 @@ namespace ENA
         private void MeasurementSetup()
         {
             eNA.SCPI.SYSTem.PRESet.Command();
-            eNA.SCPI.SENSe.SWEep.POINts.Command(1,Convert.ToInt32(stimform.Points));
-            eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToInt32(stimform.StartFrequency));
-            eNA.SCPI.SENSe.FREQuency.STOP.Command(1,Convert.ToInt32(stimform.StopFrequency));
-            eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToInt32(stimform.IFBW));
-            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1,1, stimform.SParameter);
+            eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(stimform.Points));
+            eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToDouble(stimform.StartFrequency));
+            eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToDouble(stimform.StopFrequency));
+            eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(stimform.IFBW));
+            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, stimform.SParameter);
         }
 
 
@@ -92,12 +92,13 @@ namespace ENA
                 // Select Phase Noise App, switch to Spot Frequency, Autotune to carrier and fetch data
 
                 eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(stimform.Points));
-                eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToInt32(stimform.StartFrequency));
-                eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToInt32(stimform.StopFrequency));
-                eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToInt32(stimform.IFBW));
+                eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToDouble(stimform.StartFrequency));
+                eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToDouble(stimform.StopFrequency));
+                eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(stimform.IFBW));
                 eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, stimform.SParameter);
-                //eNA.SCPI.CALCulate.SELected.LIMit.STATe.Command("ON");
-                //eNA.SCPI.CALCulate.SELected.LIMit.WARN.Command("ON");
+                eNA.SCPI.CALCulate.SELected.LIMit.STATe.Command(1,"ON");
+                eNA.SCPI.CALCulate.SELected.LIMit.DISPlay.STATe.Command(1, true); 
+                eNA.SCPI.CALCulate.SELected.LIMit.DATA.CommandAsciiReal(1,new double[] { 2, 1, 1E9, 8E9, 0, 0, 2, 1E9, 3E9, -3, -3 });
                 //// Start capturing data for specified duration at requested interval
                 //while (elapsedTime < duration)
                 //{
@@ -168,6 +169,7 @@ namespace ENA
             Marshal.ReleaseComObject(xlWorkBook);
             Marshal.ReleaseComObject(xlApp);
         }
+
         private void releaseObject(object obj)
         {
             try
@@ -229,22 +231,28 @@ namespace ENA
                 row = row + 1;
                 xlNewSheet.Cells[row, 1] = frequency;
             }
-
             xlNewSheet.Cells[1, 2] = stimform.SParameter;
             eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, stimform.SParameter);
             eNA.SCPI.CALCulate.PARameter.SELect.Command(1u);
             eNA.SCPI.FORMat.DATA.Command("ASCii");
-            eNA.SCPI.CALCulate.SELected.DATA.FDATa.QueryAsciiReal(1,out results);
+            eNA.SCPI.CALCulate.SELected.DATA.FDATa.QueryAsciiReal(1, out results);
 
             row = 1;
-            foreach (double result in results)
+            int i;
+            for (i = 0; (i <= results.Length); i = (i + 2))
             {
-                Convert.ToString(result);
+                object result = null;
+                result = results.ElementAt(i);
                 row = (row + 1);
-                xlNewSheet.Cells[row, 2] = result;
-            }
 
-            PlotSParameter(xlWorkBook, points);
+                xlNewSheet.Cells[row, 2] = result;
+                if ((row == (points + 1)))
+                {
+                    break;
+                }
+            }
+                
+             PlotSParameter(xlWorkBook, points);
 
             xlNewSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
             xlNewSheet.Select();
@@ -281,7 +289,6 @@ namespace ENA
             axisCatS21.TickLabels.NumberFormat = "0.00E+00";
             axisCatS21.TickLabelPosition = XlTickLabelPosition.xlTickLabelPositionHigh;
         }
-
 
         // Select a file from directory using File browser.
         private void Select_File(ref string Filename, ref bool Filename_Changed, string InitialDirectory = ".")

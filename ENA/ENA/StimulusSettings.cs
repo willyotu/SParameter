@@ -15,11 +15,11 @@ namespace ENA
         public StimulusSettingsForm()
         {
             InitializeComponent();
-            IFBW = "20e3";
+            IFBW = "70e3";
             ifBWTB.Text = IFBW;
             Points = "401";
             pointsNUD.Value = Convert.ToDecimal(Points);
-            StartFrequency = "40e3";
+            StartFrequency = "100e3";
             startFrequencyTB.Text = StartFrequency;
             StopFrequency = "8.5e9";
             stopFrequencyTB.Text = StopFrequency;

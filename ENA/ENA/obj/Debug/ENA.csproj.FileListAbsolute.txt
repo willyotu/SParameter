@@ -33,3 +33,5 @@ C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\obj\Debug\ENA.csproj.Gener
 C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\obj\Debug\ENA.exe
 C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\obj\Debug\ENA.pdb
 C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\obj\Debug\ENA.csprojResolveAssemblyReference.cache
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\bin\Debug\AgENA_E5071_A_11_22.dll
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\bin\Debug\AgENA_E5071_A_11_22.xml

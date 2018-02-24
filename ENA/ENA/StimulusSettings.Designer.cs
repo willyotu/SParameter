@@ -71,31 +71,28 @@
             // startFrequencyTB
             // 
             this.startFrequencyTB.Location = new System.Drawing.Point(86, 59);
-            this.startFrequencyTB.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.startFrequencyTB.Margin = new System.Windows.Forms.Padding(2);
             this.startFrequencyTB.Name = "startFrequencyTB";
             this.startFrequencyTB.Size = new System.Drawing.Size(71, 20);
             this.startFrequencyTB.TabIndex = 10;
-            this.startFrequencyTB.Text = "30000";
             this.startFrequencyTB.TextChanged += new System.EventHandler(this.startFrequencyTB_TextChanged);
             // 
             // stopFrequencyTB
             // 
             this.stopFrequencyTB.Location = new System.Drawing.Point(86, 93);
-            this.stopFrequencyTB.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.stopFrequencyTB.Margin = new System.Windows.Forms.Padding(2);
             this.stopFrequencyTB.Name = "stopFrequencyTB";
             this.stopFrequencyTB.Size = new System.Drawing.Size(71, 20);
             this.stopFrequencyTB.TabIndex = 10;
-            this.stopFrequencyTB.Text = "9000000000";
             this.stopFrequencyTB.TextChanged += new System.EventHandler(this.stopFrequencyTB_TextChanged);
             // 
             // ifBWTB
             // 
             this.ifBWTB.Location = new System.Drawing.Point(280, 58);
-            this.ifBWTB.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ifBWTB.Margin = new System.Windows.Forms.Padding(2);
             this.ifBWTB.Name = "ifBWTB";
             this.ifBWTB.Size = new System.Drawing.Size(50, 20);
             this.ifBWTB.TabIndex = 11;
-            this.ifBWTB.Text = "30000";
             this.ifBWTB.TextChanged += new System.EventHandler(this.ifBWTB_TextChanged);
             // 
             // label4
@@ -111,11 +108,10 @@
             // sParameterTB
             // 
             this.sParameterTB.Location = new System.Drawing.Point(103, 138);
-            this.sParameterTB.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.sParameterTB.Margin = new System.Windows.Forms.Padding(2);
             this.sParameterTB.Name = "sParameterTB";
             this.sParameterTB.Size = new System.Drawing.Size(54, 20);
             this.sParameterTB.TabIndex = 14;
-            this.sParameterTB.Text = "S21";
             this.sParameterTB.TextChanged += new System.EventHandler(this.sParameterTB_TextChanged);
             // 
             // label5
@@ -136,7 +132,7 @@
             0,
             0});
             this.pointsNUD.Location = new System.Drawing.Point(280, 98);
-            this.pointsNUD.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pointsNUD.Margin = new System.Windows.Forms.Padding(2);
             this.pointsNUD.Maximum = new decimal(new int[] {
             100001,
             0,
@@ -172,10 +168,9 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.stopFrequencyTB);
             this.Controls.Add(this.startFrequencyTB);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "StimulusSettingsForm";
             this.Text = "Stimulus Settings";
-            
             ((System.ComponentModel.ISupportInitialize)(this.pointsNUD)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
