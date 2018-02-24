@@ -21,10 +21,6 @@ namespace ENA
 {
     public partial class ENAForm : Form
     {
-        Range oRng;
-        Chart chart;
-        ChartObjects xlCharts;
-        ChartObject myChart;
         Workbook xlWorkBook;
         Worksheet xlWorkSheet;
         private AgN99xx_NA eNA;
@@ -40,9 +36,7 @@ namespace ENA
             eNA = new AgN99xx_NA(visaAddress);
             start = new Startup();
             stimform = new StimulusSettingsForm();
-            xlApp = new Microsoft.Office.Interop.Excel.Application();
-           
-
+            xlApp = new Excel.Application();
             resultsFileFullPath = fileDirectory + @"\" + resultsFile;
             InitializeComponent();
 
@@ -57,7 +51,7 @@ namespace ENA
         // Run Button
         private void bRun_Click(object sender, EventArgs e)
         {
-            SParamenterMeasurement();
+            SParameterMeasurement();
         }
 
         // Stop Button
@@ -82,7 +76,7 @@ namespace ENA
 
 
         // Measures S Parameter
-        private void SParamenterMeasurement()
+        private void SParameterMeasurement()
         {
             try
             {
@@ -156,15 +150,11 @@ namespace ENA
             }
 
         }
-
-       
-
-       
+             
 
         private void CreateExcel()
         {
-            //Excel.Application xlApp = new Microsoft.Office.Interop.Excel.Application();
-
+            
             if (xlApp == null)
             {
                 MessageBox.Show("Excel is not properly installed!!");
@@ -284,7 +274,7 @@ namespace ENA
             ChartObjects xlCharts = (Excel.ChartObjects)xlWorkSheet.ChartObjects(Type.Missing);
             ChartObject myChart = (Excel.ChartObject)xlCharts.Add(700, 50, 300, 300);
             Chart chart = myChart.Chart;
-            oRng = xlWorkSheet.Range["A1:A" + points + ",C1:C" + points + ""];
+            oRng = xlWorkSheet.Range["A1:A" + points + ",B1:B" + points + ""];
             chart.ChartType = XlChartType.xlXYScatterSmoothNoMarkers;
             chart.ChartStyle = 7;
             chart.ChartWizard(Source: oRng, Title: stimform.SParameter, HasLegend: true);
