@@ -40,7 +40,7 @@
             this.addressTB.Size = new System.Drawing.Size(208, 20);
             this.addressTB.TabIndex = 0;
             this.addressTB.Text = "TCPIP0::10.10.10.10::inst0::INSTR";
-          
+            
             // 
             // label1
             // 

@@ -8,14 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Agilent.CommandExpert.ScpiNet.AgN99xx_NA_A_06_23  ; // Make sure you target .NET Framework 4.5.2 or later
+using Agilent.CommandExpert.ScpiNet.AgENA_E5071_A_11_22; // Make sure you target .NET Framework 4.5.2 or later
 using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
-
-
-
 
 namespace ENA
 {
@@ -23,7 +20,7 @@ namespace ENA
     {
         Workbook xlWorkBook;
         Worksheet xlWorkSheet;
-        private AgN99xx_NA eNA;
+        private AgENA_E5071 eNA;
         private StimulusSettingsForm stimform;
         private Startup start;
         private Excel.Application xlApp;
@@ -33,7 +30,7 @@ namespace ENA
 
         public ENAForm( string visaAddress)
         {
-            eNA = new AgN99xx_NA(visaAddress);
+            eNA = new AgENA_E5071(visaAddress);
             start = new Startup();
             stimform = new StimulusSettingsForm();
             xlApp = new Excel.Application();
@@ -63,15 +60,12 @@ namespace ENA
 
         private void MeasurementSetup()
         {
-            eNA.SCPI.INSTrument.SELect.Command("NA");
-            System.Threading.Thread.Sleep(200);
-            eNA.SCPI.DISPlay.WINDow.SPLit.Command("D1");
-            eNA.SCPI.SYSTem.PRESet.MODE.Command();
-            eNA.SCPI.SENSe.SWEep.POINts.Command(stimform.Points);
-            eNA.SCPI.SENSe.FREQuency.STARt.Command(stimform.StartFrequency);
-            eNA.SCPI.SENSe.FREQuency.STOP.Command(stimform.StopFrequency);
-            eNA.SCPI.SENSe.BWID.Command(stimform.IFBW);
-            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, stimform.SParameter);
+            eNA.SCPI.SYSTem.PRESet.Command();
+            eNA.SCPI.SENSe.SWEep.POINts.Command(1,Convert.ToInt32(stimform.Points));
+            eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToInt32(stimform.StartFrequency));
+            eNA.SCPI.SENSe.FREQuency.STOP.Command(1,Convert.ToInt32(stimform.StopFrequency));
+            eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToInt32(stimform.IFBW));
+            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1,1, stimform.SParameter);
         }
 
 
@@ -97,12 +91,11 @@ namespace ENA
 
                 // Select Phase Noise App, switch to Spot Frequency, Autotune to carrier and fetch data
 
-
-                eNA.SCPI.SENSe.SWEep.POINts.Command(stimform.Points);
-                eNA.SCPI.SENSe.FREQuency.STARt.Command(stimform.StartFrequency);
-                eNA.SCPI.SENSe.FREQuency.STOP.Command(stimform.StopFrequency);
-                eNA.SCPI.SENSe.BWID.Command(stimform.IFBW);
-                eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, stimform.SParameter);
+                eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(stimform.Points));
+                eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToInt32(stimform.StartFrequency));
+                eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToInt32(stimform.StopFrequency));
+                eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToInt32(stimform.IFBW));
+                eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, stimform.SParameter);
                 //eNA.SCPI.CALCulate.SELected.LIMit.STATe.Command("ON");
                 //eNA.SCPI.CALCulate.SELected.LIMit.WARN.Command("ON");
                 //// Start capturing data for specified duration at requested interval
@@ -238,10 +231,10 @@ namespace ENA
             }
 
             xlNewSheet.Cells[1, 2] = stimform.SParameter;
-            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, stimform.SParameter);
+            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, stimform.SParameter);
             eNA.SCPI.CALCulate.PARameter.SELect.Command(1u);
-            eNA.SCPI.FORMat.DATA.Command("ASCii", 0);
-            eNA.SCPI.CALCulate.SELected.DATA.FDATa.QueryAsciiReal(out results);
+            eNA.SCPI.FORMat.DATA.Command("ASCii");
+            eNA.SCPI.CALCulate.SELected.DATA.FDATa.QueryAsciiReal(1,out results);
 
             row = 1;
             foreach (double result in results)

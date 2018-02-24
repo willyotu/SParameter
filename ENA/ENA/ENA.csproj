@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AgENA_E5071_A_11_22">
+      <HintPath>..\..\..\..\..\..\..\ProgramData\Keysight\Command Expert\ScpiNetDrivers\AgENA_E5071_A_11_22.dll</HintPath>
+    </Reference>
     <Reference Include="AgN99xx_NA_A_06_23">
       <HintPath>..\..\..\..\..\..\..\ProgramData\Keysight\Command Expert\ScpiNetDrivers\AgN99xx_NA_A_06_23.dll</HintPath>
     </Reference>
