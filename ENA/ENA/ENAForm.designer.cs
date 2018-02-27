@@ -67,6 +67,8 @@
             this.NUDNumberLimitLines = new System.Windows.Forms.NumericUpDown();
             this.lNumberLimitLines = new System.Windows.Forms.Label();
             this.CBEnableLimitTest = new System.Windows.Forms.CheckBox();
+            this.CBBeeperWarning = new System.Windows.Forms.CheckBox();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
             ((System.ComponentModel.ISupportInitialize)(this.nudDuration)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudInterval)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -186,6 +188,7 @@
             // 
             this.TabControl.Controls.Add(this.MeasurementTPage);
             this.TabControl.Controls.Add(this.TPLimitTest);
+            this.TabControl.Controls.Add(this.tabPage1);
             this.TabControl.Location = new System.Drawing.Point(0, 31);
             this.TabControl.Name = "TabControl";
             this.TabControl.SelectedIndex = 0;
@@ -233,6 +236,7 @@
             // 
             // TPLimitTest
             // 
+            this.TPLimitTest.Controls.Add(this.CBBeeperWarning);
             this.TPLimitTest.Controls.Add(this.CBLoadLimitLineTable);
             this.TPLimitTest.Controls.Add(this.GBLimitLine2);
             this.TPLimitTest.Controls.Add(this.GBLimitLine1);
@@ -486,6 +490,27 @@
             this.CBEnableLimitTest.UseVisualStyleBackColor = true;
             this.CBEnableLimitTest.CheckedChanged += new System.EventHandler(this.CBEnableLimitTest_CheckedChanged);
             // 
+            // CBBeeperWarning
+            // 
+            this.CBBeeperWarning.AutoSize = true;
+            this.CBBeeperWarning.Location = new System.Drawing.Point(478, 50);
+            this.CBBeeperWarning.Name = "CBBeeperWarning";
+            this.CBBeeperWarning.Size = new System.Drawing.Size(181, 21);
+            this.CBBeeperWarning.TabIndex = 7;
+            this.CBBeeperWarning.Text = "Enable Beeper Warning";
+            this.CBBeeperWarning.UseVisualStyleBackColor = true;
+            this.CBBeeperWarning.CheckedChanged += new System.EventHandler(this.CBLoadLimitLineTable_CheckedChanged);
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(770, 412);
+            this.tabPage1.TabIndex = 2;
+            this.tabPage1.Text = "tabPage1";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
             // ENAForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -558,6 +583,8 @@
         private System.Windows.Forms.Label lLimit2StartFrequency;
         private System.Windows.Forms.TextBox TBLimit1StopAmplitude;
         private System.Windows.Forms.CheckBox CBLoadLimitLineTable;
+        private System.Windows.Forms.CheckBox CBBeeperWarning;
+        private System.Windows.Forms.TabPage tabPage1;
     }
 }
 

@@ -41,6 +41,7 @@ namespace ENA
 
             CBEnableLimitTest.Checked = false;
             CBLoadLimitLineTable.Checked = false;
+            CBBeeperWarning.Checked = false;
 
             NumberLimitLines = 1;
 
@@ -56,14 +57,14 @@ namespace ENA
             GBLimitLine1.Hide();
             GBLimitLine2.Hide();
 
-            TBLimit1StartFrequency.Text = "0";
-            TBLimit1StopFrequency.Text  = "0";
-            TBLimit2StartFrequency.Text = "0";
-            TBLimit2StopFrequency.Text  = "0";
+            TBLimit1StartFrequency.Text = "1000000000";
+            TBLimit1StopFrequency.Text  = "1100000000";
+            TBLimit2StartFrequency.Text = "1000000000";
+            TBLimit2StopFrequency.Text  = "1100000000";
             TBLimit1StartAmplitude.Text = "0";
             TBLimit1StopAmplitude.Text  = "0";
-            TBLimit2StartAmplitude.Text = "0";
-            TBLimit2StopAmplitude.Text  = "0";
+            TBLimit2StartAmplitude.Text = "-0";
+            TBLimit2StopAmplitude.Text  = "-0";
                                           
             resultsFileFullPath = fileDirectory + @"\" + resultsFile;
            
@@ -140,10 +141,9 @@ namespace ENA
                 eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, stimform.SParameter);
                 eNA.SCPI.CALCulate.SELected.LIMit.STATe.Command(1, CBEnableLimitTest.Checked ? "ON" : "OFF");
                 eNA.SCPI.CALCulate.SELected.LIMit.DISPlay.STATe.Command(1, true);
-
+                eNA.SCPI.SYSTem.BEEPer.WARNing.STATe.Command(CBBeeperWarning.Checked);
 
                
-
                 if((ComboBLimitLineType.SelectedIndex == 1))
                     limitLineType = 1;
                 else if (ComboBLimitLineType.SelectedIndex == 2)
@@ -186,7 +186,7 @@ namespace ENA
 
                 //File.WriteAllText(ResultsFileFullPath, csv.ToString());
 
-      /////////////          ImportData();
+                ImportData();
 
 
                 //CreateExcelSheet();
@@ -279,6 +279,7 @@ namespace ENA
             xlNewSheet.Name = DateTime.Now.ToString("yyyyMMddHHmmss");
        
             double[] results;
+            double[] failedPoints;
             xlNewSheet.Cells[1, 1] = "Frequency";
 
             double startFrequency;
@@ -318,6 +319,19 @@ namespace ENA
                     break;
                 }
             }
+
+
+            xlNewSheet.Cells[1, 3] = "Failed Points";
+            eNA.SCPI.CALCulate.SELected.LIMit.REPort.DATA.QueryAsciiReal(1, out failedPoints);
+            row = 1;
+            
+            foreach(var point in failedPoints)
+            {
+                row = row + 1;
+                xlNewSheet.Cells[row, 3] = point;
+
+            }
+
                 
              PlotSParameter(xlWorkBook, points);
 
