@@ -30,13 +30,13 @@
         {
             this.addressTB = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.BStartupRun = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // addressTB
             // 
             this.addressTB.Location = new System.Drawing.Point(67, 69);
-            this.addressTB.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.addressTB.Margin = new System.Windows.Forms.Padding(4);
             this.addressTB.Name = "addressTB";
             this.addressTB.Size = new System.Drawing.Size(276, 22);
             this.addressTB.TabIndex = 0;
@@ -52,27 +52,27 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Analyzer Visa Address";
             // 
-            // button1
+            // BStartupRun
             // 
-            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button1.Location = new System.Drawing.Point(92, 114);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(139, 38);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Run";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.BStartupRun.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.BStartupRun.Location = new System.Drawing.Point(92, 114);
+            this.BStartupRun.Margin = new System.Windows.Forms.Padding(4);
+            this.BStartupRun.Name = "BStartupRun";
+            this.BStartupRun.Size = new System.Drawing.Size(139, 38);
+            this.BStartupRun.TabIndex = 2;
+            this.BStartupRun.Text = "Run";
+            this.BStartupRun.UseVisualStyleBackColor = true;
+            this.BStartupRun.Click += new System.EventHandler(this.BStartupRun_Click);
             // 
             // Startup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(549, 452);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.BStartupRun);
             this.Controls.Add(this.addressTB);
             this.Controls.Add(this.label1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Startup";
             this.Text = "Startup";
             this.ResumeLayout(false);
@@ -84,6 +84,6 @@
 
         private System.Windows.Forms.TextBox addressTB;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button BStartupRun;
     }
 }

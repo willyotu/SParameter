@@ -18,10 +18,19 @@ namespace ENA
             addressTB.Text = "TCPIP0::10.114.11.152::inst0::INSTR";
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void BStartupRun_Click(object sender, EventArgs e)
         {
-            ENAForm enaForm = new ENAForm(addressTB.Text);
-            enaForm.ShowDialog();
+            try
+            {
+                ENAForm enaForm = new ENAForm(addressTB.Text);
+                enaForm.ShowDialog();
+            }
+            catch 
+            {
+                MessageBox.Show("Check VISA Address matches that set up in IO libraires and retry");
+               
+            }
+            
         }
 
        
