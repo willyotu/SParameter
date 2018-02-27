@@ -52,8 +52,8 @@ namespace ENA
             lLimitLineType.Hide();
             GBLimitLine1.Hide();
        
-            TBLimit1StartFrequency.Text = "1000000000";
-            TBLimit1StopFrequency.Text  = "1100000000";
+            TBLimit1StartFrequency.Text = "1e9";
+            TBLimit1StopFrequency.Text  = "1.1e9";
             TBLimit1StartAmplitude.Text = "0";
 
             nudInterval.Value = 3;
@@ -123,8 +123,7 @@ namespace ENA
                     eNA.SCPI.CALCulate.SELected.LIMit.STATe.Command(1, CBEnableLimitTest.Checked ? "ON" : "OFF");
                     eNA.SCPI.CALCulate.SELected.LIMit.DISPlay.STATe.Command(1, true);
                     eNA.SCPI.SYSTem.BEEPer.WARNing.STATe.Command(CBBeeperWarning.Checked);
-
-
+                
                     if ((ComboBLimitLineType.SelectedIndex == 0))
                         limitLineType = 1;
                     else if (ComboBLimitLineType.SelectedIndex == 1)
@@ -133,7 +132,7 @@ namespace ENA
                     {
                         limitLineType = 0;
                     }
-
+           
                     eNA.SCPI.CALCulate.SELected.LIMit.DATA.CommandAsciiReal(1,
                         new double[]
                         {

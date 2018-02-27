@@ -33,3 +33,4 @@ C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\obj\Debug\ENA.Startup.reso
 C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\obj\Debug\ENA.csproj.GenerateResource.Cache
 C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\obj\Debug\ENA.exe
 C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\obj\Debug\ENA.pdb
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\obj\Debug\ENA.csprojResolveAssemblyReference.cache
