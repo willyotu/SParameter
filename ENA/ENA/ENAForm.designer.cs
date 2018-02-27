@@ -43,20 +43,7 @@
             this.lMeasurementDuration = new System.Windows.Forms.Label();
             this.lMeasurementInterval = new System.Windows.Forms.Label();
             this.TPLimitTest = new System.Windows.Forms.TabPage();
-            this.CBEnableLimitTest = new System.Windows.Forms.CheckBox();
-            this.lNumberLimitLines = new System.Windows.Forms.Label();
-            this.NUDNumberLimitLines = new System.Windows.Forms.NumericUpDown();
-            this.lTypeLimitLine = new System.Windows.Forms.Label();
-            this.CBTypeLimitLine = new System.Windows.Forms.ComboBox();
-            this.GBLimitLine1 = new System.Windows.Forms.GroupBox();
-            this.lLimit1StartFrequency = new System.Windows.Forms.Label();
-            this.TBLimit1StartFrequency = new System.Windows.Forms.TextBox();
-            this.lLimit1StopFrequency = new System.Windows.Forms.Label();
-            this.TBLimit1StopFrequency = new System.Windows.Forms.TextBox();
-            this.lLimit1StartAmplitude = new System.Windows.Forms.Label();
-            this.lLimit1StopAmplitude = new System.Windows.Forms.Label();
-            this.TBLimit1StartAmplitude = new System.Windows.Forms.TextBox();
-            this.TBLimit1StopAmplitude = new System.Windows.Forms.TextBox();
+            this.CBLoadLimitLineTable = new System.Windows.Forms.CheckBox();
             this.GBLimitLine2 = new System.Windows.Forms.GroupBox();
             this.TBLimit2StopFrequency = new System.Windows.Forms.TextBox();
             this.TBLimit2StopAmplitude = new System.Windows.Forms.TextBox();
@@ -66,16 +53,29 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.lLimit2StartFrequency = new System.Windows.Forms.Label();
-            this.CBLoadLimitLineTable = new System.Windows.Forms.CheckBox();
+            this.GBLimitLine1 = new System.Windows.Forms.GroupBox();
+            this.TBLimit1StopFrequency = new System.Windows.Forms.TextBox();
+            this.TBLimit1StopAmplitude = new System.Windows.Forms.TextBox();
+            this.TBLimit1StartAmplitude = new System.Windows.Forms.TextBox();
+            this.TBLimit1StartFrequency = new System.Windows.Forms.TextBox();
+            this.lLimit1StopFrequency = new System.Windows.Forms.Label();
+            this.lLimit1StopAmplitude = new System.Windows.Forms.Label();
+            this.lLimit1StartAmplitude = new System.Windows.Forms.Label();
+            this.lLimit1StartFrequency = new System.Windows.Forms.Label();
+            this.ComboBLimitLineType = new System.Windows.Forms.ComboBox();
+            this.lLimitLineType = new System.Windows.Forms.Label();
+            this.NUDNumberLimitLines = new System.Windows.Forms.NumericUpDown();
+            this.lNumberLimitLines = new System.Windows.Forms.Label();
+            this.CBEnableLimitTest = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudDuration)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudInterval)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.TabControl.SuspendLayout();
             this.MeasurementTPage.SuspendLayout();
             this.TPLimitTest.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.NUDNumberLimitLines)).BeginInit();
-            this.GBLimitLine1.SuspendLayout();
             this.GBLimitLine2.SuspendLayout();
+            this.GBLimitLine1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NUDNumberLimitLines)).BeginInit();
             this.SuspendLayout();
             // 
             // bFilePath
@@ -236,8 +236,8 @@
             this.TPLimitTest.Controls.Add(this.CBLoadLimitLineTable);
             this.TPLimitTest.Controls.Add(this.GBLimitLine2);
             this.TPLimitTest.Controls.Add(this.GBLimitLine1);
-            this.TPLimitTest.Controls.Add(this.CBTypeLimitLine);
-            this.TPLimitTest.Controls.Add(this.lTypeLimitLine);
+            this.TPLimitTest.Controls.Add(this.ComboBLimitLineType);
+            this.TPLimitTest.Controls.Add(this.lLimitLineType);
             this.TPLimitTest.Controls.Add(this.NUDNumberLimitLines);
             this.TPLimitTest.Controls.Add(this.lNumberLimitLines);
             this.TPLimitTest.Controls.Add(this.CBEnableLimitTest);
@@ -249,150 +249,16 @@
             this.TPLimitTest.Text = "Limit Test";
             this.TPLimitTest.UseVisualStyleBackColor = true;
             // 
-            // CBEnableLimitTest
+            // CBLoadLimitLineTable
             // 
-            this.CBEnableLimitTest.AutoSize = true;
-            this.CBEnableLimitTest.Location = new System.Drawing.Point(24, 17);
-            this.CBEnableLimitTest.Name = "CBEnableLimitTest";
-            this.CBEnableLimitTest.Size = new System.Drawing.Size(139, 21);
-            this.CBEnableLimitTest.TabIndex = 0;
-            this.CBEnableLimitTest.Text = "Enable Limit Test";
-            this.CBEnableLimitTest.UseVisualStyleBackColor = true;
-            // 
-            // lNumberLimitLines
-            // 
-            this.lNumberLimitLines.AutoSize = true;
-            this.lNumberLimitLines.Location = new System.Drawing.Point(24, 50);
-            this.lNumberLimitLines.Name = "lNumberLimitLines";
-            this.lNumberLimitLines.Size = new System.Drawing.Size(145, 17);
-            this.lNumberLimitLines.TabIndex = 1;
-            this.lNumberLimitLines.Text = "Number of Limit Lines";
-            // 
-            // NUDNumberLimitLines
-            // 
-            this.NUDNumberLimitLines.Location = new System.Drawing.Point(188, 48);
-            this.NUDNumberLimitLines.Maximum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-            this.NUDNumberLimitLines.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.NUDNumberLimitLines.Name = "NUDNumberLimitLines";
-            this.NUDNumberLimitLines.Size = new System.Drawing.Size(58, 22);
-            this.NUDNumberLimitLines.TabIndex = 2;
-            this.NUDNumberLimitLines.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // lTypeLimitLine
-            // 
-            this.lTypeLimitLine.AutoSize = true;
-            this.lTypeLimitLine.Location = new System.Drawing.Point(27, 83);
-            this.lTypeLimitLine.Name = "lTypeLimitLine";
-            this.lTypeLimitLine.Size = new System.Drawing.Size(120, 17);
-            this.lTypeLimitLine.TabIndex = 3;
-            this.lTypeLimitLine.Text = "Type of Limit Line";
-            // 
-            // CBTypeLimitLine
-            // 
-            this.CBTypeLimitLine.FormattingEnabled = true;
-            this.CBTypeLimitLine.Items.AddRange(new object[] {
-            "Select Limit  Type",
-            "Upper Limit",
-            "Lower Limit"});
-            this.CBTypeLimitLine.Location = new System.Drawing.Point(188, 83);
-            this.CBTypeLimitLine.Name = "CBTypeLimitLine";
-            this.CBTypeLimitLine.Size = new System.Drawing.Size(123, 24);
-            this.CBTypeLimitLine.TabIndex = 4;
-            // 
-            // GBLimitLine1
-            // 
-            this.GBLimitLine1.Controls.Add(this.TBLimit1StopFrequency);
-            this.GBLimitLine1.Controls.Add(this.TBLimit1StopAmplitude);
-            this.GBLimitLine1.Controls.Add(this.TBLimit1StartAmplitude);
-            this.GBLimitLine1.Controls.Add(this.TBLimit1StartFrequency);
-            this.GBLimitLine1.Controls.Add(this.lLimit1StopFrequency);
-            this.GBLimitLine1.Controls.Add(this.lLimit1StopAmplitude);
-            this.GBLimitLine1.Controls.Add(this.lLimit1StartAmplitude);
-            this.GBLimitLine1.Controls.Add(this.lLimit1StartFrequency);
-            this.GBLimitLine1.Location = new System.Drawing.Point(24, 113);
-            this.GBLimitLine1.Name = "GBLimitLine1";
-            this.GBLimitLine1.Size = new System.Drawing.Size(620, 105);
-            this.GBLimitLine1.TabIndex = 5;
-            this.GBLimitLine1.TabStop = false;
-            this.GBLimitLine1.Text = "Limit Line 1";
-            // 
-            // lLimit1StartFrequency
-            // 
-            this.lLimit1StartFrequency.AutoSize = true;
-            this.lLimit1StartFrequency.Location = new System.Drawing.Point(6, 29);
-            this.lLimit1StartFrequency.Name = "lLimit1StartFrequency";
-            this.lLimit1StartFrequency.Size = new System.Drawing.Size(109, 17);
-            this.lLimit1StartFrequency.TabIndex = 0;
-            this.lLimit1StartFrequency.Text = "Start Frequency";
-            // 
-            // TBLimit1StartFrequency
-            // 
-            this.TBLimit1StartFrequency.Location = new System.Drawing.Point(164, 21);
-            this.TBLimit1StartFrequency.Name = "TBLimit1StartFrequency";
-            this.TBLimit1StartFrequency.Size = new System.Drawing.Size(129, 22);
-            this.TBLimit1StartFrequency.TabIndex = 1;
-            this.TBLimit1StartFrequency.TextChanged += new System.EventHandler(this.TBLimit1StartFrequency_TextChanged);
-            // 
-            // lLimit1StopFrequency
-            // 
-            this.lLimit1StopFrequency.AutoSize = true;
-            this.lLimit1StopFrequency.Location = new System.Drawing.Point(6, 71);
-            this.lLimit1StopFrequency.Name = "lLimit1StopFrequency";
-            this.lLimit1StopFrequency.Size = new System.Drawing.Size(108, 17);
-            this.lLimit1StopFrequency.TabIndex = 0;
-            this.lLimit1StopFrequency.Text = "Stop Frequency";
-            // 
-            // TBLimit1StopFrequency
-            // 
-            this.TBLimit1StopFrequency.Location = new System.Drawing.Point(164, 67);
-            this.TBLimit1StopFrequency.Name = "TBLimit1StopFrequency";
-            this.TBLimit1StopFrequency.Size = new System.Drawing.Size(129, 22);
-            this.TBLimit1StopFrequency.TabIndex = 1;
-            // 
-            // lLimit1StartAmplitude
-            // 
-            this.lLimit1StartAmplitude.AutoSize = true;
-            this.lLimit1StartAmplitude.Location = new System.Drawing.Point(351, 30);
-            this.lLimit1StartAmplitude.Name = "lLimit1StartAmplitude";
-            this.lLimit1StartAmplitude.Size = new System.Drawing.Size(104, 17);
-            this.lLimit1StartAmplitude.TabIndex = 0;
-            this.lLimit1StartAmplitude.Text = "Start Amplitude";
-            this.lLimit1StartAmplitude.Click += new System.EventHandler(this.lLimit1StartAmplitude_Click);
-            // 
-            // lLimit1StopAmplitude
-            // 
-            this.lLimit1StopAmplitude.AutoSize = true;
-            this.lLimit1StopAmplitude.Location = new System.Drawing.Point(351, 67);
-            this.lLimit1StopAmplitude.Name = "lLimit1StopAmplitude";
-            this.lLimit1StopAmplitude.Size = new System.Drawing.Size(103, 17);
-            this.lLimit1StopAmplitude.TabIndex = 0;
-            this.lLimit1StopAmplitude.Text = "Stop Amplitude";
-            // 
-            // TBLimit1StartAmplitude
-            // 
-            this.TBLimit1StartAmplitude.Location = new System.Drawing.Point(476, 30);
-            this.TBLimit1StartAmplitude.Name = "TBLimit1StartAmplitude";
-            this.TBLimit1StartAmplitude.Size = new System.Drawing.Size(129, 22);
-            this.TBLimit1StartAmplitude.TabIndex = 1;
-            // 
-            // TBLimit1StopAmplitude
-            // 
-            this.TBLimit1StopAmplitude.Location = new System.Drawing.Point(476, 71);
-            this.TBLimit1StopAmplitude.Name = "TBLimit1StopAmplitude";
-            this.TBLimit1StopAmplitude.Size = new System.Drawing.Size(129, 22);
-            this.TBLimit1StopAmplitude.TabIndex = 1;
+            this.CBLoadLimitLineTable.AutoSize = true;
+            this.CBLoadLimitLineTable.Location = new System.Drawing.Point(478, 17);
+            this.CBLoadLimitLineTable.Name = "CBLoadLimitLineTable";
+            this.CBLoadLimitLineTable.Size = new System.Drawing.Size(166, 21);
+            this.CBLoadLimitLineTable.TabIndex = 7;
+            this.CBLoadLimitLineTable.Text = "Load Limit Line Table";
+            this.CBLoadLimitLineTable.UseVisualStyleBackColor = true;
+            this.CBLoadLimitLineTable.CheckedChanged += new System.EventHandler(this.CBLoadLimitLineTable_CheckedChanged);
             // 
             // GBLimitLine2
             // 
@@ -474,17 +340,151 @@
             this.lLimit2StartFrequency.Size = new System.Drawing.Size(109, 17);
             this.lLimit2StartFrequency.TabIndex = 0;
             this.lLimit2StartFrequency.Text = "Start Frequency";
-            this.lLimit2StartFrequency.Click += new System.EventHandler(this.label4_Click);
             // 
-            // CBLoadLimitLineTable
+            // GBLimitLine1
             // 
-            this.CBLoadLimitLineTable.AutoSize = true;
-            this.CBLoadLimitLineTable.Location = new System.Drawing.Point(445, 47);
-            this.CBLoadLimitLineTable.Name = "CBLoadLimitLineTable";
-            this.CBLoadLimitLineTable.Size = new System.Drawing.Size(166, 21);
-            this.CBLoadLimitLineTable.TabIndex = 7;
-            this.CBLoadLimitLineTable.Text = "Load Limit Line Table";
-            this.CBLoadLimitLineTable.UseVisualStyleBackColor = true;
+            this.GBLimitLine1.Controls.Add(this.TBLimit1StopFrequency);
+            this.GBLimitLine1.Controls.Add(this.TBLimit1StopAmplitude);
+            this.GBLimitLine1.Controls.Add(this.TBLimit1StartAmplitude);
+            this.GBLimitLine1.Controls.Add(this.TBLimit1StartFrequency);
+            this.GBLimitLine1.Controls.Add(this.lLimit1StopFrequency);
+            this.GBLimitLine1.Controls.Add(this.lLimit1StopAmplitude);
+            this.GBLimitLine1.Controls.Add(this.lLimit1StartAmplitude);
+            this.GBLimitLine1.Controls.Add(this.lLimit1StartFrequency);
+            this.GBLimitLine1.Location = new System.Drawing.Point(24, 113);
+            this.GBLimitLine1.Name = "GBLimitLine1";
+            this.GBLimitLine1.Size = new System.Drawing.Size(620, 105);
+            this.GBLimitLine1.TabIndex = 5;
+            this.GBLimitLine1.TabStop = false;
+            this.GBLimitLine1.Text = "Limit Line 1";
+            // 
+            // TBLimit1StopFrequency
+            // 
+            this.TBLimit1StopFrequency.Location = new System.Drawing.Point(164, 67);
+            this.TBLimit1StopFrequency.Name = "TBLimit1StopFrequency";
+            this.TBLimit1StopFrequency.Size = new System.Drawing.Size(129, 22);
+            this.TBLimit1StopFrequency.TabIndex = 1;
+            // 
+            // TBLimit1StopAmplitude
+            // 
+            this.TBLimit1StopAmplitude.Location = new System.Drawing.Point(476, 71);
+            this.TBLimit1StopAmplitude.Name = "TBLimit1StopAmplitude";
+            this.TBLimit1StopAmplitude.Size = new System.Drawing.Size(129, 22);
+            this.TBLimit1StopAmplitude.TabIndex = 1;
+            // 
+            // TBLimit1StartAmplitude
+            // 
+            this.TBLimit1StartAmplitude.Location = new System.Drawing.Point(476, 30);
+            this.TBLimit1StartAmplitude.Name = "TBLimit1StartAmplitude";
+            this.TBLimit1StartAmplitude.Size = new System.Drawing.Size(129, 22);
+            this.TBLimit1StartAmplitude.TabIndex = 1;
+            // 
+            // TBLimit1StartFrequency
+            // 
+            this.TBLimit1StartFrequency.Location = new System.Drawing.Point(164, 21);
+            this.TBLimit1StartFrequency.Name = "TBLimit1StartFrequency";
+            this.TBLimit1StartFrequency.Size = new System.Drawing.Size(129, 22);
+            this.TBLimit1StartFrequency.TabIndex = 1;
+            // 
+            // lLimit1StopFrequency
+            // 
+            this.lLimit1StopFrequency.AutoSize = true;
+            this.lLimit1StopFrequency.Location = new System.Drawing.Point(6, 71);
+            this.lLimit1StopFrequency.Name = "lLimit1StopFrequency";
+            this.lLimit1StopFrequency.Size = new System.Drawing.Size(108, 17);
+            this.lLimit1StopFrequency.TabIndex = 0;
+            this.lLimit1StopFrequency.Text = "Stop Frequency";
+            // 
+            // lLimit1StopAmplitude
+            // 
+            this.lLimit1StopAmplitude.AutoSize = true;
+            this.lLimit1StopAmplitude.Location = new System.Drawing.Point(351, 67);
+            this.lLimit1StopAmplitude.Name = "lLimit1StopAmplitude";
+            this.lLimit1StopAmplitude.Size = new System.Drawing.Size(103, 17);
+            this.lLimit1StopAmplitude.TabIndex = 0;
+            this.lLimit1StopAmplitude.Text = "Stop Amplitude";
+            // 
+            // lLimit1StartAmplitude
+            // 
+            this.lLimit1StartAmplitude.AutoSize = true;
+            this.lLimit1StartAmplitude.Location = new System.Drawing.Point(351, 30);
+            this.lLimit1StartAmplitude.Name = "lLimit1StartAmplitude";
+            this.lLimit1StartAmplitude.Size = new System.Drawing.Size(104, 17);
+            this.lLimit1StartAmplitude.TabIndex = 0;
+            this.lLimit1StartAmplitude.Text = "Start Amplitude";
+            // 
+            // lLimit1StartFrequency
+            // 
+            this.lLimit1StartFrequency.AutoSize = true;
+            this.lLimit1StartFrequency.Location = new System.Drawing.Point(6, 29);
+            this.lLimit1StartFrequency.Name = "lLimit1StartFrequency";
+            this.lLimit1StartFrequency.Size = new System.Drawing.Size(109, 17);
+            this.lLimit1StartFrequency.TabIndex = 0;
+            this.lLimit1StartFrequency.Text = "Start Frequency";
+            // 
+            // ComboBLimitLineType
+            // 
+            this.ComboBLimitLineType.FormattingEnabled = true;
+            this.ComboBLimitLineType.Items.AddRange(new object[] {
+            "Select Limit  Type",
+            "Upper Limit",
+            "Lower Limit"});
+            this.ComboBLimitLineType.Location = new System.Drawing.Point(188, 83);
+            this.ComboBLimitLineType.Name = "ComboBLimitLineType";
+            this.ComboBLimitLineType.Size = new System.Drawing.Size(123, 24);
+            this.ComboBLimitLineType.TabIndex = 4;
+            // 
+            // lLimitLineType
+            // 
+            this.lLimitLineType.AutoSize = true;
+            this.lLimitLineType.Location = new System.Drawing.Point(27, 83);
+            this.lLimitLineType.Name = "lLimitLineType";
+            this.lLimitLineType.Size = new System.Drawing.Size(120, 17);
+            this.lLimitLineType.TabIndex = 3;
+            this.lLimitLineType.Text = "Type of Limit Line";
+            // 
+            // NUDNumberLimitLines
+            // 
+            this.NUDNumberLimitLines.Location = new System.Drawing.Point(188, 48);
+            this.NUDNumberLimitLines.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.NUDNumberLimitLines.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.NUDNumberLimitLines.Name = "NUDNumberLimitLines";
+            this.NUDNumberLimitLines.Size = new System.Drawing.Size(58, 22);
+            this.NUDNumberLimitLines.TabIndex = 2;
+            this.NUDNumberLimitLines.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.NUDNumberLimitLines.ValueChanged += new System.EventHandler(this.NUDNumberLimitLines_ValueChanged_1);
+            // 
+            // lNumberLimitLines
+            // 
+            this.lNumberLimitLines.AutoSize = true;
+            this.lNumberLimitLines.Location = new System.Drawing.Point(24, 50);
+            this.lNumberLimitLines.Name = "lNumberLimitLines";
+            this.lNumberLimitLines.Size = new System.Drawing.Size(145, 17);
+            this.lNumberLimitLines.TabIndex = 1;
+            this.lNumberLimitLines.Text = "Number of Limit Lines";
+            // 
+            // CBEnableLimitTest
+            // 
+            this.CBEnableLimitTest.AutoSize = true;
+            this.CBEnableLimitTest.Location = new System.Drawing.Point(24, 17);
+            this.CBEnableLimitTest.Name = "CBEnableLimitTest";
+            this.CBEnableLimitTest.Size = new System.Drawing.Size(139, 21);
+            this.CBEnableLimitTest.TabIndex = 0;
+            this.CBEnableLimitTest.Text = "Enable Limit Test";
+            this.CBEnableLimitTest.UseVisualStyleBackColor = true;
+            this.CBEnableLimitTest.CheckedChanged += new System.EventHandler(this.CBEnableLimitTest_CheckedChanged);
             // 
             // ENAForm
             // 
@@ -508,11 +508,11 @@
             this.MeasurementTPage.PerformLayout();
             this.TPLimitTest.ResumeLayout(false);
             this.TPLimitTest.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.NUDNumberLimitLines)).EndInit();
-            this.GBLimitLine1.ResumeLayout(false);
-            this.GBLimitLine1.PerformLayout();
             this.GBLimitLine2.ResumeLayout(false);
             this.GBLimitLine2.PerformLayout();
+            this.GBLimitLine1.ResumeLayout(false);
+            this.GBLimitLine1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NUDNumberLimitLines)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -542,8 +542,8 @@
         private System.Windows.Forms.Label lLimit1StopAmplitude;
         private System.Windows.Forms.Label lLimit1StartAmplitude;
         private System.Windows.Forms.Label lLimit1StartFrequency;
-        private System.Windows.Forms.ComboBox CBTypeLimitLine;
-        private System.Windows.Forms.Label lTypeLimitLine;
+        private System.Windows.Forms.ComboBox ComboBLimitLineType;
+        private System.Windows.Forms.Label lLimitLineType;
         private System.Windows.Forms.NumericUpDown NUDNumberLimitLines;
         private System.Windows.Forms.Label lNumberLimitLines;
         private System.Windows.Forms.CheckBox CBEnableLimitTest;

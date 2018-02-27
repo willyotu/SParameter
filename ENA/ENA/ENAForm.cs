@@ -39,22 +39,22 @@ namespace ENA
             stimform = new StimulusSettingsForm();
             xlApp = new Excel.Application();
 
-            CBoxEnableLimitTest.Checked = false;
-            CBLoadLimitLine.Checked = false;
+            CBEnableLimitTest.Checked = false;
+            CBLoadLimitLineTable.Checked = false;
 
             NumberLimitLines = 1;
 
             NUDNumberLimitLines.Value = NumberLimitLines;
 
-            CBLimitLineType.SelectedIndex = 0;
+            ComboBLimitLineType.SelectedIndex = 0;
 
             NUDNumberLimitLines.Hide();
-            lnumberLimitLines.Hide();
-            CBLimitLineType.Hide();
-            LLimitLineType.Hide();
+            lNumberLimitLines.Hide();
+            ComboBLimitLineType.Hide();
+            lLimitLineType.Hide();
 
-            GBoxLL1.Hide();
-            GBoxLL2.Hide();
+            GBLimitLine1.Hide();
+            GBLimitLine2.Hide();
 
             TBLimit1StartFrequency.Text = "0";
             TBLimit1StopFrequency.Text  = "0";
@@ -120,6 +120,17 @@ namespace ENA
                 int interval = Convert.ToInt32(nudInterval.Value);
                 int duration = Convert.ToInt32(nudDuration.Value);
 
+                int numberLimitLines = Convert.ToInt32(NUDNumberLimitLines.Value);
+               double limitline1StartF = Convert.ToDouble(TBLimit1StartFrequency.Text);
+               double limitline1StopF = Convert.ToDouble(TBLimit1StopFrequency.Text);
+               double limitline2StartF = Convert.ToDouble(TBLimit2StartFrequency.Text);
+               double limitline2StopF = Convert.ToDouble(TBLimit2StopFrequency.Text);
+               double limitline1StartA = Convert.ToDouble(TBLimit1StartAmplitude.Text);
+               double limitline1StopA = Convert.ToDouble(TBLimit1StopAmplitude.Text);
+               double limitline2StartA = Convert.ToDouble(TBLimit2StartAmplitude.Text);
+               double limitline2StopA = Convert.ToDouble(TBLimit2StopAmplitude.Text);
+               double limitLineType;                   
+
                 // Select Phase Noise App, switch to Spot Frequency, Autotune to carrier and fetch data
 
                 eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(stimform.Points));
@@ -127,33 +138,22 @@ namespace ENA
                 eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToDouble(stimform.StopFrequency));
                 eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(stimform.IFBW));
                 eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, stimform.SParameter);
-                eNA.SCPI.CALCulate.SELected.LIMit.STATe.Command(1, CBoxEnableLimitTest.Checked ? "ON" : "OFF");
+                eNA.SCPI.CALCulate.SELected.LIMit.STATe.Command(1, CBEnableLimitTest.Checked ? "ON" : "OFF");
                 eNA.SCPI.CALCulate.SELected.LIMit.DISPlay.STATe.Command(1, true);
 
 
+               
 
-
-                int numberLimitLines = Convert.ToInt32(NUDNumberLimitLines.Value);
-                int limitline1StartF = Convert.ToInt32(TBLimit1StartFrequency.Text);
-                int limitline1StopF = Convert.ToInt32( TBLimit1StopFrequency.Text );
-                int limitline2StartF = Convert.ToInt32(TBLimit2StartFrequency.Text);
-                int limitline2StopF = Convert.ToInt32( TBLimit2StopFrequency.Text );
-                int limitline1StartA = Convert.ToInt32(TBLimit1StartAmplitude.Text);
-                int limitline1StopA = Convert.ToInt32( TBLimit1StopAmplitude.Text );
-                int limitline2StartA = Convert.ToInt32(TBLimit2StartAmplitude.Text);
-                int limitline2StopA = Convert.ToInt32(TBLimit2StopAmplitude.Text);
-                int limitLineType;
-
-                if((CBLimitLineType.SelectedIndex == 1))
+                if((ComboBLimitLineType.SelectedIndex == 1))
                     limitLineType = 1;
-                else if (CBLimitLineType.SelectedIndex == 2)
+                else if (ComboBLimitLineType.SelectedIndex == 2)
                     limitLineType = 2;
                 else
                 {
                     limitLineType = 0;
                 }
 
-                if (CBoxEnableLimitTest.Checked && NUDNumberLimitLines.Value == 1 && CBLimitLineType.SelectedIndex == 0)
+                if (CBEnableLimitTest.Checked && NUDNumberLimitLines.Value == 1 && ComboBLimitLineType.SelectedIndex == 0)
                 {
                     MessageBox.Show("Please select type of limit line from drop down list");
                 }
@@ -409,48 +409,9 @@ namespace ENA
            // NumberLimitLines = Convert.ToInt32(NUDNumberLimitLines.Value);
         }
 
-        private void NUDNumberLimitLines_ValueChanged(object sender, EventArgs e)
-        {
-            if (NUDNumberLimitLines.Value > 1)
-            {
-                CBLimitLineType.Hide();
-                LLimitLineType.Hide();
-                GBoxLL1.Show();
-                GBoxLL2.Show();
-            }
-            else
-            {
-                CBLimitLineType.Show();
-                LLimitLineType.Show();
-                GBoxLL1.Show();
-                GBoxLL2.Hide();
-            }
-        }
+     
 
-        private void CBoxEnableLimitTest_CheckedChanged(object sender, EventArgs e)
-        {
-           if (!CBoxEnableLimitTest.Checked)
-            {
-                NUDNumberLimitLines.Hide();
-                lnumberLimitLines.Hide();
-                CBLimitLineType.Hide();
-                LLimitLineType.Hide();
-                GBoxLL1.Hide();
-                GBoxLL2.Hide();
-            }
-            else
-            {
-                NUDNumberLimitLines.Show();
-                lnumberLimitLines.Show();
-                CBLimitLineType.Show();
-                LLimitLineType.Show();
-                GBoxLL1.Show();
-                GBoxLL2.Show();
-            }
-
-         }
-
-        private void CBLoadLimitLine_CheckedChanged(object sender, EventArgs e)
+        private void CBLoadLimitLineTable_CheckedChanged(object sender, EventArgs e)
         {
             Excel.Application xlApp;
             Excel.Workbook xlWorkBook;
@@ -489,25 +450,48 @@ namespace ENA
             Marshal.ReleaseComObject(xlApp);
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void CBEnableLimitTest_CheckedChanged(object sender, EventArgs e)
         {
+            if (!CBEnableLimitTest.Checked)
+            {
+                NUDNumberLimitLines.Hide();
+                lNumberLimitLines.Hide();
+                ComboBLimitLineType.Hide();
+                lLimitLineType.Hide();
+                GBLimitLine1.Hide();
+                GBLimitLine2.Hide();
+            }
+            else
+            {
+                NUDNumberLimitLines.Show();
+                lNumberLimitLines.Show();
+                ComboBLimitLineType.Show();
+                lLimitLineType.Show();
+                GBLimitLine1.Show();
+                GBLimitLine2.Show();
+            }
 
         }
 
-        private void lLimit1StartAmplitude_Click(object sender, EventArgs e)
+        private void NUDNumberLimitLines_ValueChanged_1(object sender, EventArgs e)
         {
-
+            if (NUDNumberLimitLines.Value > 1)
+            {
+                ComboBLimitLineType.Hide();
+                lLimitLineType.Hide();
+                GBLimitLine1.Show();
+                GBLimitLine2.Show();
+            }
+            else
+            {
+                ComboBLimitLineType.Show();
+                lLimitLineType.Show();
+                GBLimitLine1.Show();
+                GBLimitLine2.Hide();
+            }
         }
 
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void TBLimit1StartFrequency_TextChanged(object sender, EventArgs e)
-        {
-
-        }
+       
     }
 }
  
