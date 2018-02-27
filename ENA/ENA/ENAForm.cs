@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using Agilent.CommandExpert.ScpiNet.AgENA_E5071_A_11_22; // Make sure you target .NET Framework 4.5.2 or later
 using System.IO;
 using System.Runtime.InteropServices;
-using Agilent.CommandExpert.ScpiNet.AgENA_E5071_A_11_22.SCPI.SENSe.VOLTage.DC.RANGe.UPPer;
+
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -22,36 +22,31 @@ namespace ENA
         Workbook xlWorkBook;
         Worksheet xlWorkSheet;
         private AgENA_E5071 eNA;
-        private StimulusSettingsForm stimform;
-        private Startup start;
+       
         private Excel.Application xlApp;
         private string resultsFile = "Results.txt";
         private string resultsFileFullPath;
         private string fileDirectory = @"C:\Users\wilattoh\Documents";
 
-        public int NumberLimitLines { get; set; }
-
+       
         public ENAForm( string visaAddress)
         {
             InitializeComponent();
             eNA = new AgENA_E5071(visaAddress);
+            xlApp = new Excel.Application();
             IFBW = "70e3";
             ifBWTB.Text = IFBW;
             Points = "401";
             pointsNUD.Value = Convert.ToDecimal(Points);
-            StartFrequency = "100e3";
+            StartFrequency = "300e3";
             startFrequencyTB.Text = StartFrequency;
             StopFrequency = "8.5e9";
             stopFrequencyTB.Text = StopFrequency;
             SParameter = "S21";
             sParameterTB.Text = SParameter;
-            xlApp = new Excel.Application();
-
+            
             CBEnableLimitTest.Checked = false;
             CBBeeperWarning.Checked = false;
-
-            NumberLimitLines = 1;
-            
             ComboBLimitLineType.SelectedIndex = 0;
             ComboBLimitLineType.Hide();
             lLimitLineType.Hide();
@@ -60,7 +55,8 @@ namespace ENA
             TBLimit1StartFrequency.Text = "1000000000";
             TBLimit1StopFrequency.Text  = "1100000000";
             TBLimit1StartAmplitude.Text = "0";
-                                     
+
+            nudInterval.Value = 3;
             resultsFileFullPath = fileDirectory + @"\" + resultsFile;
           }
 
@@ -71,13 +67,13 @@ namespace ENA
         }
 
         // Run Button
-        private void bRun_Click_1(object sender, EventArgs e)
+        private void bRun_Click(object sender, EventArgs e)
         {
             SParameterMeasurement();
         }
 
         // Stop Button
-        private void bStop_Click_1(object sender, EventArgs e)
+        private void bStop_Click(object sender, EventArgs e)
         {
             this.Close();
             System.Windows.Forms.Application.Exit();
@@ -92,115 +88,72 @@ namespace ENA
             eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(IFBW));
             eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, SParameter);
         }
-
-
+        
         // Measures S Parameter
         private void SParameterMeasurement()
         {
             try
             {
-
                 // Begin timing and start capturing data.
                 DateTime startTime = DateTime.Now;
                 bRun.Enabled = false;
                 double elapsed = 0;
                 int elapsedTime = 0;
+                
+                int interval = Convert.ToInt32(nudInterval.Value);
+                int intervalConverted = interval * 1000;
+                double limitline1StartF = Convert.ToDouble(TBLimit1StartFrequency.Text);
+                double limitline1StopF = Convert.ToDouble(TBLimit1StopFrequency.Text);
+                double limitline1Amplitude = Convert.ToDouble(TBLimit1StartAmplitude.Text);
 
-                double[] result = null;
-                double delta = 0;
-                double frequencyDelta = 0;
 
-                var csv = new StringBuilder();
-               
-                int duration = Convert.ToInt32(nudDuration.Value);
-               
-               double limitline1StartF = Convert.ToDouble(TBLimit1StartFrequency.Text);
-               double limitline1StopF = Convert.ToDouble(TBLimit1StopFrequency.Text);
-               double limitline1Amplitude = Convert.ToDouble(TBLimit1StartAmplitude.Text);
-               double limitLineType;                   
+                // Start capturing data 
+             //while{bStop_Click event has not changed}
+                    DateTime stopTime = DateTime.Now;
+                    elapsed = stopTime.Subtract(startTime).TotalSeconds;
+                    elapsedTime = Convert.ToInt32(elapsed);
 
-                // Select Phase Noise App, switch to Spot Frequency, Autotune to carrier and fetch data
+                    double limitLineType;
+                   
+                    eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(Points));
+                    eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToDouble(StartFrequency));
+                    eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToDouble(StopFrequency));
+                    eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(IFBW));
+                    eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, SParameter);
+                    eNA.SCPI.CALCulate.SELected.LIMit.STATe.Command(1, CBEnableLimitTest.Checked ? "ON" : "OFF");
+                    eNA.SCPI.CALCulate.SELected.LIMit.DISPlay.STATe.Command(1, true);
+                    eNA.SCPI.SYSTem.BEEPer.WARNing.STATe.Command(CBBeeperWarning.Checked);
 
-                eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(Points));
-                eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToDouble(StartFrequency));
-                eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToDouble(StopFrequency));
-                eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(IFBW));
-                eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, SParameter);
-                eNA.SCPI.CALCulate.SELected.LIMit.STATe.Command(1, CBEnableLimitTest.Checked ? "ON" : "OFF");
-                eNA.SCPI.CALCulate.SELected.LIMit.DISPlay.STATe.Command(1, true);
-                eNA.SCPI.SYSTem.BEEPer.WARNing.STATe.Command(CBBeeperWarning.Checked);
 
-               
-                if((ComboBLimitLineType.SelectedIndex == 1))
-                    limitLineType = 1;
-                else if (ComboBLimitLineType.SelectedIndex == 2)
-                    limitLineType = 2;
-                else
-                {
-                    limitLineType = 0;
-                }
+                    if ((ComboBLimitLineType.SelectedIndex == 0))
+                        limitLineType = 1;
+                    else if (ComboBLimitLineType.SelectedIndex == 1)
+                        limitLineType = 2;
+                    else
+                    {
+                        limitLineType = 0;
+                    }
 
-                if (CBEnableLimitTest.Checked  && ComboBLimitLineType.SelectedIndex == 0)
-                {
-                    MessageBox.Show("Please select type of limit line from drop down list");
-                    System.Windows.Forms.Application.Exit();
-                }
-                else
-                {
                     eNA.SCPI.CALCulate.SELected.LIMit.DATA.CommandAsciiReal(1,
                         new double[]
                         {
                             1, limitLineType, limitline1StartF, limitline1StopF, limitline1Amplitude,
                             limitline1Amplitude
                         });
+                
+                    ImportData();
+                    bRun.Enabled = true;
+                    System.Threading.Thread.Sleep(intervalConverted);
+                    System.Windows.Forms.Application.DoEvents();
+            
 
-                }
-
-
-                //// Start capturing data for specified duration at requested interval
-                //while (elapsedTime < duration)
-                //{
-                //    DateTime stopTime = DateTime.Now;
-                //    elapsed = stopTime.Subtract(startTime).TotalSeconds;
-                //    elapsedTime = Convert.ToInt32(elapsed);
-                //    eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, stimform.SParameter);
-                //    eNA.SCPI.CALCulate.PARameter.SELect.Command(1u);
-                //    eNA.SCPI.CALCulate.SELected.LIMit.LLData.Command(new double[] { 1, 1, 1, 0, 2, 30e6, 10, 9e9, 10 });
-                //    eNA.SCPI.FORMat.DATA.Command("ASCii", 0);
-                //    eNA.SCPI.CALCulate.SELected.DATA.FDATa.QueryAsciiReal(out result);
-                //delta = result.ElementAt(3); // Parse only the Frequency Delta.
-                //frequencyDelta = Math.Round(delta, 3);
-                //System.Threading.Thread.Sleep(interval); // Here we are getting data at specified interval in msecs.
-                //var first = frequencyDelta.ToString();
-                //var newLine = string.Format("{0}{1}", first, Environment.NewLine);
-                //csv.Append(newLine);
-
-                //File.WriteAllText(ResultsFileFullPath, csv.ToString());
-
-                ImportData();
-
-
-                //CreateExcelSheet();
-
-                // result = FillSpreadsheetData(eNA);
-
-                //Plot S21
                
-
-
-
-                System.Windows.Forms.Application.DoEvents();
-              //  }
-                bRun.Enabled = true;
-                MessageBox.Show("Measurement Completed");
-
+               
             }
             catch (Exception e)
             {
-
                 MessageBox.Show("Check VISA Address \n{0}" + e);
             }
-
         }
         private string _iFBW;
         public string IFBW
@@ -253,8 +206,7 @@ namespace ENA
         {
             StartFrequency = startFrequencyTB.Text;
         }
-
-
+        
         private string _stopFrequency;
         public string StopFrequency
         {
@@ -284,12 +236,14 @@ namespace ENA
                 _sParameter = value;
             }
         }
+
+       
+
         private void sParameterTB_TextChanged(object sender, EventArgs e)
         {
             SParameter = sParameterTB.Text;
         }
-
-
+        
         private void CreateExcel()
         {
             
@@ -476,32 +430,6 @@ namespace ENA
             resultsFileFullPath = resultsFile;
             if (Filename_Changed) { tbFilePath.Text = resultsFile; };
         }
-    
-        private void stimulusToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-           stimform.MdiParent = this;
-            if (stimform.IsDisposed)
-            {
-                stimform = new StimulusSettingsForm();
-            }
-
-            stimform.Show();
-            stimform.Left = (this.Width
-                             - (stimform.Width - 20));
-        }
-
-        private void MeasurementTPage_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void CBLimitLineType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-           // NumberLimitLines = Convert.ToInt32(NUDNumberLimitLines.Value);
-        }
-
-     
-
         private void CBLoadLimitLineTable_CheckedChanged(object sender, EventArgs e)
         {
             Excel.Application xlApp;
@@ -540,7 +468,6 @@ namespace ENA
             Marshal.ReleaseComObject(xlWorkBook);
             Marshal.ReleaseComObject(xlApp);
         }
-
         private void CBEnableLimitTest_CheckedChanged(object sender, EventArgs e)
         {
             if (!CBEnableLimitTest.Checked)
@@ -556,6 +483,11 @@ namespace ENA
                 lLimitLineType.Show();
                 GBLimitLine1.Show();
              }
+
+        }
+
+        private void nudDuration_ValueChanged(object sender, EventArgs e)
+        {
 
         }
     }
