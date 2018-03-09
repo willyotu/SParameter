@@ -27,8 +27,8 @@ namespace ENA
         private string resultsFile = "Results.txt";
         private string resultsFileFullPath;
         private string fileDirectory = @"C:\Users\wilattoh\Documents";
+        private bool bStopClicked = false;
 
-       
         public ENAForm( string visaAddress)
         {
             InitializeComponent();
@@ -49,16 +49,17 @@ namespace ENA
             CBBeeperWarning.Checked = false;
             ComboBLimitLineType.SelectedIndex = 0;
             ComboBLimitLineType.Hide();
-            lLimitLineType.Hide();
-            GBLimitLine1.Hide();
+            GBPeakSearch.Hide();
+            GBLimitLine.Hide();
        
             TBLimit1StartFrequency.Text = "1e9";
             TBLimit1StopFrequency.Text  = "1.1e9";
-            TBLimit1StartAmplitude.Text = "0";
+            TBLimitStartAmplitude.Text = "0";
 
-            nudInterval.Value = 3;
+            nudInterval.Value = 60;
             resultsFileFullPath = fileDirectory + @"\" + resultsFile;
-          }
+            bStop.Click += new System.EventHandler(bStop_Click);
+        }
 
         // Load the ENA Measurement Form 
         private void ENAForm_Load(object sender, EventArgs e)
@@ -69,12 +70,19 @@ namespace ENA
         // Run Button
         private void bRun_Click(object sender, EventArgs e)
         {
-            SParameterMeasurement();
+            while (!bStopClicked)
+            {
+                SParameterMeasurement();
+                Timing();
+                System.Windows.Forms.Application.DoEvents();
+
+            }
         }
 
         // Stop Button
         private void bStop_Click(object sender, EventArgs e)
         {
+            bStopClicked = true;
             this.Close();
             System.Windows.Forms.Application.Exit();
         }
@@ -102,58 +110,54 @@ namespace ENA
                 
                 int interval = Convert.ToInt32(nudInterval.Value);
                 int intervalConverted = interval * 1000;
-                double limitline1StartF = Convert.ToDouble(TBLimit1StartFrequency.Text);
-                double limitline1StopF = Convert.ToDouble(TBLimit1StopFrequency.Text);
-                double limitline1Amplitude = Convert.ToDouble(TBLimit1StartAmplitude.Text);
+                double limitline1StartF = Convert.ToDouble(startFrequencyTB.Text);
+                double limitline1StopF = Convert.ToDouble(stopFrequencyTB.Text);
+                double limitline1Amplitude = Convert.ToDouble(TBLimitStartAmplitude.Text);
 
 
                 // Start capturing data 
-             //while{bStop_Click event has not changed}
-                    DateTime stopTime = DateTime.Now;
-                    elapsed = stopTime.Subtract(startTime).TotalSeconds;
-                    elapsedTime = Convert.ToInt32(elapsed);
-
-                    double limitLineType;
-                   
-                    eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(Points));
-                    eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToDouble(StartFrequency));
-                    eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToDouble(StopFrequency));
-                    eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(IFBW));
-                    eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, SParameter);
-                    eNA.SCPI.CALCulate.SELected.LIMit.STATe.Command(1, CBEnableLimitTest.Checked ? "ON" : "OFF");
-                    eNA.SCPI.CALCulate.SELected.LIMit.DISPlay.STATe.Command(1, true);
-                    eNA.SCPI.SYSTem.BEEPer.WARNing.STATe.Command(CBBeeperWarning.Checked);
-                
-                    if ((ComboBLimitLineType.SelectedIndex == 0))
-                        limitLineType = 1;
-                    else if (ComboBLimitLineType.SelectedIndex == 1)
-                        limitLineType = 2;
-                    else
-                    {
-                        limitLineType = 0;
-                    }
-           
-                    eNA.SCPI.CALCulate.SELected.LIMit.DATA.CommandAsciiReal(1,
-                        new double[]
-                        {
-                            1, limitLineType, limitline1StartF, limitline1StopF, limitline1Amplitude,
-                            limitline1Amplitude
-                        });
-                
-                    ImportData();
-                    bRun.Enabled = true;
-                    System.Threading.Thread.Sleep(intervalConverted);
-                    System.Windows.Forms.Application.DoEvents();
             
+                DateTime stopTime = DateTime.Now;
+                elapsed = stopTime.Subtract(startTime).TotalSeconds;
+                elapsedTime = Convert.ToInt32(elapsed);
 
-               
-               
+                double limitLineType;
+                   
+                eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(Points));
+                eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToDouble(StartFrequency));
+                eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToDouble(StopFrequency));
+                eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(IFBW));
+                eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, SParameter);
+                eNA.SCPI.CALCulate.SELected.LIMit.STATe.Command(1, CBEnableLimitTest.Checked ? "ON" : "OFF");
+                eNA.SCPI.CALCulate.SELected.LIMit.DISPlay.STATe.Command(1, true);
+                eNA.SCPI.SYSTem.BEEPer.WARNing.STATe.Command(CBBeeperWarning.Checked);
+            
+                if ((ComboBLimitLineType.SelectedIndex == 0))
+                    limitLineType = 1;
+                else if (ComboBLimitLineType.SelectedIndex == 1)
+                    limitLineType = 2;
+                else
+                {
+                    limitLineType = 0;
+                }
+       
+                eNA.SCPI.CALCulate.SELected.LIMit.DATA.CommandAsciiReal(1,
+                    new double[]
+                    {
+                        1, limitLineType, limitline1StartF, limitline1StopF, limitline1Amplitude,
+                        limitline1Amplitude
+                    });
+            
+                ImportData();
+                bRun.Enabled = true;
+                System.Windows.Forms.Application.DoEvents();
             }
             catch (Exception e)
             {
                 MessageBox.Show("Check VISA Address \n{0}" + e);
             }
         }
+
         private string _iFBW;
         public string IFBW
         {
@@ -235,9 +239,7 @@ namespace ENA
                 _sParameter = value;
             }
         }
-
-       
-
+      
         private void sParameterTB_TextChanged(object sender, EventArgs e)
         {
             SParameter = sParameterTB.Text;
@@ -472,20 +474,52 @@ namespace ENA
             if (!CBEnableLimitTest.Checked)
             {
                 ComboBLimitLineType.Hide();
-                lLimitLineType.Hide();
-                GBLimitLine1.Hide();
+                //lLimitLineType.Hide();
+
+                GBLimitLine.Hide();
+                GBPeakSearch.Hide();
                
             }
             else
             {
                 ComboBLimitLineType.Show();
-                lLimitLineType.Show();
-                GBLimitLine1.Show();
+                //lLimitLineType.Show();
+                GBLimitLine.Show();
+                GBPeakSearch.Show();
              }
 
         }
 
         private void nudDuration_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Timing()
+        {
+            //Create an instance of StopWatch
+            Stopwatch watch = new Stopwatch();
+
+            //Start the StopWatch
+            watch.Start();
+
+            //Perform Some Action
+            System.Threading.Thread.Sleep(Convert.ToInt32(nudInterval.Value)*1000);
+
+            //Stop the StopWatch
+            watch.Stop();
+
+
+
+            //Check Elapsed Time
+
+            Console.WriteLine("Time elapsed as per stopwatch: {0} ",
+
+            watch.Elapsed);
+
+        }
+
+        private void TPLimitTest_Click(object sender, EventArgs e)
         {
 
         }
