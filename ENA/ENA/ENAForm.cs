@@ -24,9 +24,7 @@ namespace ENA
         private AgENA_E5071 eNA;
        
         private Excel.Application xlApp;
-        private string resultsFile = "Results.txt";
-        private string resultsFileFullPath;
-        private string fileDirectory = @"C:\Users\wilattoh\Documents";
+       
         private bool bStopClicked = false;
 
         public ENAForm( string visaAddress)
@@ -54,11 +52,13 @@ namespace ENA
        
             TBLimit1StartFrequency.Text = "1e9";
             TBLimit1StopFrequency.Text  = "1.1e9";
-            TBLimitStartAmplitude.Text = "0";
+            TBLimitStartAmplitude.Text = "-30";
 
-            nudInterval.Value = 60;
-            resultsFileFullPath = fileDirectory + @"\" + resultsFile;
+            nudInterval.Value = 10;
+     
             bStop.Click += new System.EventHandler(bStop_Click);
+
+            tbFilePath.Text = @"C:\Users\wilattoh\Documents\csharp-Excel.xls";
         }
 
         // Load the ENA Measurement Form 
@@ -147,7 +147,9 @@ namespace ENA
                         1, limitLineType, limitline1StartF, limitline1StopF, limitline1Amplitude,
                         limitline1Amplitude
                     });
-            
+                eNA.SCPI.CALCulate.SELected.FUNCtion.TYPE.Command(1u, "MAXimum");
+                eNA.SCPI.CALCulate.SELected.FUNCtion.EXECute.Command(1u);
+                
                 ImportData();
                 bRun.Enabled = true;
                 System.Windows.Forms.Application.DoEvents();
@@ -297,7 +299,7 @@ namespace ENA
             }
 
             xlApp.DisplayAlerts = false;
-            string filePath = @"C:\Users\wilattoh\Documents\csharp-Excel.xls";
+            string filePath = tbFilePath.Text;
             if (!System.IO.File.Exists(filePath))
             {
                 CreateExcel();
@@ -312,6 +314,7 @@ namespace ENA
        
             double[] results;
             double[] failedPoints;
+            double[] maxAmplitude;
             xlNewSheet.Cells[1, 1] = "Frequency";
 
             double startFrequency;
@@ -353,24 +356,31 @@ namespace ENA
             }
 
 
-            xlNewSheet.Cells[1, 3] = "Failed Points";
+            xlNewSheet.Cells[1, 3] = "Cut Off Frequency";
             eNA.SCPI.CALCulate.SELected.LIMit.REPort.DATA.QueryAsciiReal(1, out failedPoints);
             row = 1;
+            row = row + 1;
+            xlNewSheet.Cells[row, 3] = failedPoints[0];
             
-            foreach(var point in failedPoints)
-            {
-                row = row + 1;
-                xlNewSheet.Cells[row, 3] = point;
 
-            }
+            xlNewSheet.Cells[1, 4] = "Maximum Amplitude";
+            eNA.SCPI.CALCulate.SELected.FUNCtion.DATA.QueryAsciiReal(1,out maxAmplitude);
+            row = 1;
+            row = row + 1;
+            xlNewSheet.Cells[row, 4] = maxAmplitude[0];         
 
-                
-             PlotSParameter(xlWorkBook, points);
+
+            PlotSParameter(xlWorkBook, points);
 
             xlNewSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
             xlNewSheet.Select();
 
-            xlWorkBook.SaveAs(@"C:\Users\wilattoh\Documents\csharp-Excel.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+            //xlWorkBook.SaveAs(@"C:\Users\wilattoh\Documents\csharp-Excel.xls", Excel.XlFileFormat.xlWorkbookNormal,
+            //    misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+
+            xlWorkBook.SaveAs(tbFilePath.Text, Excel.XlFileFormat.xlWorkbookNormal,
+                  misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+
             xlWorkBook.Close(true, misValue, misValue);
             xlApp.Quit();
             releaseObject(xlNewSheet);
@@ -403,33 +413,37 @@ namespace ENA
             axisCatS21.TickLabelPosition = XlTickLabelPosition.xlTickLabelPositionHigh;
         }
 
-        // Select a file from directory using File browser.
-        private void Select_File(ref string Filename, ref bool Filename_Changed, string InitialDirectory = ".")
+        // Select a file from directory using File browser and show selected file path on GUI
+        private void bFilePath_Click(object sender, EventArgs e)
         {
-            Filename_Changed = false;
-
-            OpenFileDialog openFileDialogReadFile = new OpenFileDialog();
-            openFileDialogReadFile.InitialDirectory = InitialDirectory;
-            openFileDialogReadFile.RestoreDirectory = true;
-
-            openFileDialogReadFile.Multiselect = false;
-
-            if (openFileDialogReadFile.ShowDialog() == DialogResult.OK)
+            try
             {
-                Filename = openFileDialogReadFile.FileName;
-                Filename_Changed = true;
+                SaveFileDialog SaveFileDialog = new SaveFileDialog();
+                SaveFileDialog.InitialDirectory = @"C:\";
+                SaveFileDialog.Title = "Save Text Files";
+                SaveFileDialog.CheckFileExists = true;
+                SaveFileDialog.CheckPathExists = true;
+
+
+                SaveFileDialog.DefaultExt = "xls";
+                SaveFileDialog.Filter = "Excel files (*.xls)|*.xls|All files(*.*)|*.*";
+                SaveFileDialog.FilterIndex = 2;
+                SaveFileDialog.RestoreDirectory = true;
+                //openFileDialog.ReadOnlyChecked = true;
+                //openFileDialog.ShowReadOnly = true;
+
+                if (SaveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    tbFilePath.Text = SaveFileDialog.FileName;
+                }
+
             }
+            catch (Exception error)
+            {
 
-        }
-
-        // Show selected file path on GUI
-        private void FilePath_Click(object sender, EventArgs e)
-        {
-            bool Filename_Changed = false;
-
-            Select_File(ref resultsFile, ref Filename_Changed, fileDirectory);
-            resultsFileFullPath = resultsFile;
-            if (Filename_Changed) { tbFilePath.Text = resultsFile; };
+                MessageBox.Show(error.Message);
+            }
+           
         }
         private void CBLoadLimitLineTable_CheckedChanged(object sender, EventArgs e)
         {
@@ -523,6 +537,8 @@ namespace ENA
         {
 
         }
+
+        
     }
 }
  
