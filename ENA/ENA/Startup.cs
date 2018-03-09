@@ -15,7 +15,7 @@ namespace ENA
         public Startup()
         {
             InitializeComponent();
-            addressTB.Text = "TCPIP0::10.10.10.10::inst0::INSTR";
+            addressTB.Text = "TCPIP0::10.114.11.152::inst0::INSTR";
         }
 
         private void button1_Click(object sender, EventArgs e)
