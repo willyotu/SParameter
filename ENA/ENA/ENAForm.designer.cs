@@ -50,6 +50,8 @@
             this.stopFrequencyTB = new System.Windows.Forms.TextBox();
             this.startFrequencyTB = new System.Windows.Forms.TextBox();
             this.TPLimitTest = new System.Windows.Forms.TabPage();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.GBLimitLine = new System.Windows.Forms.GroupBox();
             this.TBLimitStartAmplitude = new System.Windows.Forms.TextBox();
             this.lLimitAmplitude = new System.Windows.Forms.Label();
@@ -69,6 +71,7 @@
             this.GBStimulusSetup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pointsNUD)).BeginInit();
             this.TPLimitTest.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.GBLimitLine.SuspendLayout();
             this.GBPeakSearch.SuspendLayout();
             this.SuspendLayout();
@@ -110,7 +113,6 @@
             0,
             0,
             0});
-            this.nudInterval.ValueChanged += new System.EventHandler(this.nudDuration_ValueChanged);
             // 
             // bStop
             // 
@@ -140,7 +142,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(559, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(565, 24);
             this.menuStrip1.TabIndex = 17;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -152,7 +154,7 @@
             this.TabControl.Margin = new System.Windows.Forms.Padding(2);
             this.TabControl.Name = "TabControl";
             this.TabControl.SelectedIndex = 0;
-            this.TabControl.Size = new System.Drawing.Size(558, 333);
+            this.TabControl.Size = new System.Drawing.Size(563, 348);
             this.TabControl.TabIndex = 19;
             // 
             // MeasurementTPage
@@ -162,10 +164,11 @@
             this.MeasurementTPage.Margin = new System.Windows.Forms.Padding(2);
             this.MeasurementTPage.Name = "MeasurementTPage";
             this.MeasurementTPage.Padding = new System.Windows.Forms.Padding(2);
-            this.MeasurementTPage.Size = new System.Drawing.Size(550, 307);
+            this.MeasurementTPage.Size = new System.Drawing.Size(555, 322);
             this.MeasurementTPage.TabIndex = 0;
             this.MeasurementTPage.Text = "Stimulus Setup";
             this.MeasurementTPage.UseVisualStyleBackColor = true;
+            
             // 
             // GBStimulusSetup
             // 
@@ -297,6 +300,7 @@
             // 
             // TPLimitTest
             // 
+            this.TPLimitTest.Controls.Add(this.statusStrip1);
             this.TPLimitTest.Controls.Add(this.GBLimitLine);
             this.TPLimitTest.Controls.Add(this.bFilePath);
             this.TPLimitTest.Controls.Add(this.tbFilePath);
@@ -311,11 +315,26 @@
             this.TPLimitTest.Margin = new System.Windows.Forms.Padding(2);
             this.TPLimitTest.Name = "TPLimitTest";
             this.TPLimitTest.Padding = new System.Windows.Forms.Padding(2);
-            this.TPLimitTest.Size = new System.Drawing.Size(550, 307);
+            this.TPLimitTest.Size = new System.Drawing.Size(555, 322);
             this.TPLimitTest.TabIndex = 1;
             this.TPLimitTest.Text = "Measurement";
             this.TPLimitTest.UseVisualStyleBackColor = true;
-            this.TPLimitTest.Click += new System.EventHandler(this.TPLimitTest_Click);
+            
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblStatus});
+            this.statusStrip1.Location = new System.Drawing.Point(2, 298);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(551, 22);
+            this.statusStrip1.TabIndex = 35;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(0, 17);
             // 
             // GBLimitLine
             // 
@@ -458,7 +477,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(559, 359);
+            this.ClientSize = new System.Drawing.Size(565, 374);
             this.Controls.Add(this.TabControl);
             this.Controls.Add(this.menuStrip1);
             this.IsMdiContainer = true;
@@ -474,6 +493,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pointsNUD)).EndInit();
             this.TPLimitTest.ResumeLayout(false);
             this.TPLimitTest.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.GBLimitLine.ResumeLayout(false);
             this.GBLimitLine.PerformLayout();
             this.GBPeakSearch.ResumeLayout(false);
@@ -518,6 +539,8 @@
         private System.Windows.Forms.TextBox startFrequencyTB;
         private System.Windows.Forms.GroupBox GBStimulusSetup;
         private System.Windows.Forms.GroupBox GBLimitLine;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel lblStatus;
     }
 }
 
