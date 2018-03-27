@@ -28,7 +28,7 @@ namespace ENA
 
         bool bStopClicked = false;
 
-        public ENAForm( string visaAddress)
+        public ENAForm(string visaAddress)
         {
             InitializeComponent();
           //  ENAForm.CheckForIllegalCrossThreadCalls = false; // this is bad!
@@ -53,8 +53,7 @@ namespace ENA
             
             CBEnableLimitTest.Checked = false;
             CBBeeperWarning.Checked = false;
-            ComboBLimitLineType.SelectedIndex = 0;
-            ComboBLimitLineType.Hide();
+            
             GBPeakSearch.Hide();
             GBLimitLine.Hide();
        
@@ -68,7 +67,7 @@ namespace ENA
          
 
             tbFilePath.Text = @"C:\Users\wilattoh\Documents\csharp-Excel.xls";
-            
+            string excelName = tbFilePath.Text;
 
         }
                
@@ -162,11 +161,11 @@ namespace ENA
         {
             try
             {
-                bRun.Enabled = false;
+                //bRun.Enabled = false;
                 double limitline1StartF = Convert.ToDouble(startFrequencyTB.Text);
                 double limitline1StopF = Convert.ToDouble(stopFrequencyTB.Text);
                 double limitline1Amplitude = Convert.ToDouble(TBLimitStartAmplitude.Text);
-                double limitLineType;
+               
 
                 eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(Points));
                 eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToDouble(StartFrequency));
@@ -176,26 +175,19 @@ namespace ENA
                 eNA.SCPI.CALCulate.SELected.LIMit.STATe.Command(1, CBEnableLimitTest.Checked ? "ON" : "OFF");
                 eNA.SCPI.CALCulate.SELected.LIMit.DISPlay.STATe.Command(1, true);
                 eNA.SCPI.SYSTem.BEEPer.WARNing.STATe.Command(CBBeeperWarning.Checked);
+
                 
-                if ((ComboBLimitLineType.SelectedIndex == 0))
-                    limitLineType = 1;
-                else if (ComboBLimitLineType.SelectedIndex == 1)
-                    limitLineType = 2;
-                else
-                {
-                    limitLineType = 0;
-                }
 
                 eNA.SCPI.CALCulate.SELected.LIMit.DATA.CommandAsciiReal(1,
                     new double[]
                     {
-                        1, limitLineType, limitline1StartF, limitline1StopF, limitline1Amplitude,
+                        1, 1, limitline1StartF, limitline1StopF, limitline1Amplitude,
                         limitline1Amplitude
                     });
                 eNA.SCPI.CALCulate.SELected.FUNCtion.TYPE.Command(1u, "MAXimum");
                 eNA.SCPI.CALCulate.SELected.FUNCtion.EXECute.Command(1u);
 
-                bRun.Enabled = true;
+                //bRun.Enabled = true;
               
             }
             catch (Exception e)
@@ -292,57 +284,54 @@ namespace ENA
         }
         private void CBEnableLimitTest_CheckedChanged(object sender, EventArgs e)
         {
+            
             if (!CBEnableLimitTest.Checked)
             {
-                ComboBLimitLineType.Hide();
-                //lLimitLineType.Hide();
-
                 GBLimitLine.Hide();
                 GBPeakSearch.Hide();
 
             }
             else
             {
-                ComboBLimitLineType.Show();
-                //lLimitLineType.Show();
                 GBLimitLine.Show();
                 GBPeakSearch.Show();
             }
+            
 
         }
 
+       
         // Run Button
-        private void bRun_Click(object sender, EventArgs e)
-        {
-                       
-            while (!bStopClicked)
-            {
-                SParameterMeasurement();
-                System.Windows.Forms.Application.DoEvents();
-                SaveSParameterExcel();
-                System.Windows.Forms.Application.DoEvents();
-                Timing();
-                System.Windows.Forms.Application.DoEvents();
-
-            }
-        }
-
         //private void bRun_Click(object sender, EventArgs e)
         //{
 
-        //    if (!myWorker.IsBusy)//Check if the worker is already in progress
+        //    while (!bStopClicked)
         //    {
-        //        bRun.Enabled = false;//Disable the Start button
-        //        myWorker.RunWorkerAsync();//Call the background worker
+        //        SParameterMeasurement();
+        //        System.Windows.Forms.Application.DoEvents();
+        //        SaveSParameterExcel();
+        //        System.Windows.Forms.Application.DoEvents();
+        //        Timing();
+        //        System.Windows.Forms.Application.DoEvents();
 
         //    }
-
         //}
+
+        private void bRun_Click(object sender, EventArgs e)
+        {
+
+            if (!myWorker.IsBusy)//Check if the worker is already in progress
+            {
+                bRun.Enabled = false;//Disable the Start button
+                myWorker.RunWorkerAsync();//Call the background worker
+            }
+
+        }
 
         private void bStop_Click(object sender, EventArgs e)
         {
-            bStopClicked = true;
-           // myWorker.CancelAsync();//Issue a cancellation request to stop the background worker
+           // bStopClicked = true;
+            myWorker.CancelAsync();//Issue a cancellation request to stop the background worker
         }
 
         protected void myWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -355,7 +344,7 @@ namespace ENA
                 {
                     SParameterMeasurement();
                     SaveSParameterExcel();
-                    bRun.Enabled = true;
+                   // bRun.Enabled = true;
                     Timing();
                 }
                 else
@@ -500,19 +489,28 @@ namespace ENA
                     break;
                 }
             }
-            
-            xlNewSheet.Cells[1, 3] = "Cut Off Frequency";
+
+            xlNewSheet.Cells[1, 3] = "Time captured";
+            row = 1;
+            row = row + 1;
+            xlNewSheet.Cells[row, 3] = DateTime.Now;
+          // xlNewSheet.Range["C2"].NumberFormat = "yy/MM/d/HH:mm:ss";
+            xlNewSheet.Columns.AutoFit();
+
+            xlNewSheet.Cells[1, 4] = "Cut Off Frequency";
             eNA.SCPI.CALCulate.SELected.LIMit.REPort.DATA.QueryAsciiReal(1, out failedPoints);
             row = 1;
             row = row + 1;
-            xlNewSheet.Cells[row, 3] = failedPoints[0];
+            xlNewSheet.Cells[row, 4] = failedPoints[0];
 
 
-            xlNewSheet.Cells[1, 4] = "Maximum Amplitude";
+            xlNewSheet.Cells[1, 5] = "Maximum Amplitude";
             eNA.SCPI.CALCulate.SELected.FUNCtion.DATA.QueryAsciiReal(1, out maxAmplitude);
             row = 1;
             row = row + 1;
-            xlNewSheet.Cells[row, 4] = maxAmplitude[0];
+            xlNewSheet.Cells[row, 5] = maxAmplitude[0];
+
+           
 
             PlotSParameter(xlWorkBook, points);
 
@@ -521,13 +519,16 @@ namespace ENA
             xlWorkBook.SaveAs(tbFilePath.Text, Excel.XlFileFormat.xlWorkbookNormal,
                   misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
 
-            xlWorkBook.Close(true, misValue, misValue);
+             xlWorkBook.Close(true, misValue, misValue);
+           
+            xlApp.Application.Quit();
             xlApp.Quit();
             ReleaseObject(xlNewSheet);
             ReleaseObject(worksheets);
             ReleaseObject(xlWorkBook);
             ReleaseObject(xlApp);
-       }
+            KillSpecificExcelFileProcess(tbFilePath.Text);
+        }
         private void PlotSParameter(Workbook xlWorkBook, int points)
         {
             Range oRng;
@@ -570,9 +571,25 @@ namespace ENA
             watch.Elapsed);
 
         }
+
         #endregion
 
 
+        private void KillSpecificExcelFileProcess(string excelName)
+        {
+            var processes = from p in Process.GetProcessesByName("EXCEL")
+                            select p;
+
+            foreach (var process in processes)
+            {
+                if (process.MainWindowTitle == "Microsoft Excel - " + excelName)
+                    process.Kill();
+            }
+        }
+        private void ComboBLimitLineType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
  

@@ -55,8 +55,6 @@
             this.GBLimitLine = new System.Windows.Forms.GroupBox();
             this.TBLimitStartAmplitude = new System.Windows.Forms.TextBox();
             this.lLimitAmplitude = new System.Windows.Forms.Label();
-            this.ComboBLimitLineType = new System.Windows.Forms.ComboBox();
-            this.lLimitLineType = new System.Windows.Forms.Label();
             this.lMeasurementDuration = new System.Windows.Forms.Label();
             this.CBBeeperWarning = new System.Windows.Forms.CheckBox();
             this.GBPeakSearch = new System.Windows.Forms.GroupBox();
@@ -92,7 +90,7 @@
             // 
             this.tbFilePath.Location = new System.Drawing.Point(44, 9);
             this.tbFilePath.Name = "tbFilePath";
-            this.tbFilePath.Size = new System.Drawing.Size(202, 20);
+            this.tbFilePath.Size = new System.Drawing.Size(340, 20);
             this.tbFilePath.TabIndex = 32;
             this.toolTip1.SetToolTip(this.tbFilePath, "Browse path for .txt file");
             // 
@@ -168,7 +166,6 @@
             this.MeasurementTPage.TabIndex = 0;
             this.MeasurementTPage.Text = "Stimulus Setup";
             this.MeasurementTPage.UseVisualStyleBackColor = true;
-            
             // 
             // GBStimulusSetup
             // 
@@ -319,7 +316,6 @@
             this.TPLimitTest.TabIndex = 1;
             this.TPLimitTest.Text = "Measurement";
             this.TPLimitTest.UseVisualStyleBackColor = true;
-            
             // 
             // statusStrip1
             // 
@@ -340,8 +336,6 @@
             // 
             this.GBLimitLine.Controls.Add(this.TBLimitStartAmplitude);
             this.GBLimitLine.Controls.Add(this.lLimitAmplitude);
-            this.GBLimitLine.Controls.Add(this.ComboBLimitLineType);
-            this.GBLimitLine.Controls.Add(this.lLimitLineType);
             this.GBLimitLine.Location = new System.Drawing.Point(12, 77);
             this.GBLimitLine.Name = "GBLimitLine";
             this.GBLimitLine.Size = new System.Drawing.Size(256, 85);
@@ -351,7 +345,7 @@
             // 
             // TBLimitStartAmplitude
             // 
-            this.TBLimitStartAmplitude.Location = new System.Drawing.Point(129, 51);
+            this.TBLimitStartAmplitude.Location = new System.Drawing.Point(81, 21);
             this.TBLimitStartAmplitude.Margin = new System.Windows.Forms.Padding(2);
             this.TBLimitStartAmplitude.Name = "TBLimitStartAmplitude";
             this.TBLimitStartAmplitude.Size = new System.Drawing.Size(58, 20);
@@ -360,34 +354,12 @@
             // lLimitAmplitude
             // 
             this.lLimitAmplitude.AutoSize = true;
-            this.lLimitAmplitude.Location = new System.Drawing.Point(13, 54);
+            this.lLimitAmplitude.Location = new System.Drawing.Point(5, 24);
             this.lLimitAmplitude.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lLimitAmplitude.Name = "lLimitAmplitude";
             this.lLimitAmplitude.Size = new System.Drawing.Size(53, 13);
             this.lLimitAmplitude.TabIndex = 0;
             this.lLimitAmplitude.Text = "Amplitude";
-            // 
-            // ComboBLimitLineType
-            // 
-            this.ComboBLimitLineType.FormattingEnabled = true;
-            this.ComboBLimitLineType.Items.AddRange(new object[] {
-            "Upper Limit",
-            "Lower Limit"});
-            this.ComboBLimitLineType.Location = new System.Drawing.Point(129, 21);
-            this.ComboBLimitLineType.Margin = new System.Windows.Forms.Padding(2);
-            this.ComboBLimitLineType.Name = "ComboBLimitLineType";
-            this.ComboBLimitLineType.Size = new System.Drawing.Size(111, 21);
-            this.ComboBLimitLineType.TabIndex = 4;
-            // 
-            // lLimitLineType
-            // 
-            this.lLimitLineType.AutoSize = true;
-            this.lLimitLineType.Location = new System.Drawing.Point(8, 21);
-            this.lLimitLineType.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lLimitLineType.Name = "lLimitLineType";
-            this.lLimitLineType.Size = new System.Drawing.Size(90, 13);
-            this.lLimitLineType.TabIndex = 3;
-            this.lLimitLineType.Text = "Type of Limit Line";
             // 
             // lMeasurementDuration
             // 
@@ -517,8 +489,6 @@
         private System.Windows.Forms.Label lLimit1StopFrequency;
         private System.Windows.Forms.Label lLimitAmplitude;
         private System.Windows.Forms.Label lLimit1StartFrequency;
-        private System.Windows.Forms.ComboBox ComboBLimitLineType;
-        private System.Windows.Forms.Label lLimitLineType;
         private System.Windows.Forms.CheckBox CBEnableLimitTest;
         private System.Windows.Forms.CheckBox CBBeeperWarning;
         private System.Windows.Forms.Button bFilePath;

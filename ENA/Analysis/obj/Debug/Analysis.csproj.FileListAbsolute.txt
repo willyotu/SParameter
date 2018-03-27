@@ -1,0 +1,10 @@
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\obj\Debug\Analysis.csprojResolveAssemblyReference.cache
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\obj\Debug\Analysis.csproj.ResolveComReference.cache
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\obj\Debug\Analysis.Properties.Resources.resources
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\obj\Debug\Analysis.csproj.GenerateResource.Cache
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\bin\Debug\Analysis.exe.config
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\bin\Debug\Analysis.exe
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\bin\Debug\Analysis.pdb
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\obj\Debug\Analysis.exe
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\obj\Debug\Analysis.pdb
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\obj\Debug\Analysis.AnalysisForm.resources
