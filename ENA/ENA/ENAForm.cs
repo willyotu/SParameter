@@ -51,11 +51,11 @@ namespace ENA
             SParameter = "S21";
             sParameterTB.Text = SParameter;
             
-            CBEnableLimitTest.Checked = false;
+            CBEnableLimitTest.Checked = true;
             CBBeeperWarning.Checked = false;
             
-            GBPeakSearch.Hide();
-            GBLimitLine.Hide();
+            GBPeakSearch.Show();
+            GBLimitLine.Show();
        
             TBLimit1StartFrequency.Text = "1e9";
             TBLimit1StopFrequency.Text  = "1.1e9";
@@ -573,7 +573,6 @@ namespace ENA
         }
 
         #endregion
-
 
         private void KillSpecificExcelFileProcess(string excelName)
         {

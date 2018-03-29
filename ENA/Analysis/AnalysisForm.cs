@@ -31,12 +31,10 @@ namespace Analysis
             InitializeComponent();
             tbFilePath.Text = @"C:\Users\wilattoh\Documents\csharp-Excel.xls";
         }
-
         private void AnalysisForm_Load(object sender, EventArgs e)
         {
 
         }
-
         private void PlotOverDay()
         {
             Excel.Application xlApp = new Excel.Application();
@@ -195,8 +193,6 @@ namespace Analysis
 
             xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.Add(xlWorkBook.Worksheets[1], Type.Missing, Type.Missing, Type.Missing);
             xlWorkSheet.Name = DateTime.Now.ToString("yyMMddHHmmss");
-          
-
 
             timeCellRange = xlWorkSheet.Application.Cells[2, 3];
             ActWsName = xlWorkSheet.Application.ActiveSheet.Name;
@@ -207,7 +203,7 @@ namespace Analysis
             
             foreach (Worksheet Ws in timeExcel)
             {
-                if ((Ws.Name != ActWsName))
+                if (Ws.Name != ActWsName && !Ws.Name.StartsWith(DateTime.Now.ToString("yyMMdd")))
                 { 
                     var wsName = Ws.Name.ToString();
                     var year = string.Concat(wsName[0], wsName[1], wsName[2], wsName[3]);
@@ -226,10 +222,9 @@ namespace Analysis
                         xIndex = (xIndex + 1);
                     }
 
-                }
-
+                 }
             }
-
+            xlWorkSheet.Columns.AutoFit();
             xlWorkSheet.Application.ScreenUpdating = true;
 
 
@@ -242,8 +237,9 @@ namespace Analysis
             int xIndex2 = 0;
             foreach (Worksheet Ws in timeExcel)
             {
-                if ((Ws.Name != ActWsName))
+                if (Ws.Name != ActWsName && !Ws.Name.StartsWith(DateTime.Now.ToString("yyMMdd")))
                 {
+               
                     var wsName = Ws.Name.ToString();
                     var year = string.Concat(wsName[0], wsName[1], wsName[2], wsName[3]);
                     var month = string.Concat(wsName[4], wsName[5]);
@@ -255,16 +251,16 @@ namespace Analysis
                     var timeDifference = DateTime.Now.Subtract(wsNamedate);
                     var numberOfDays = timeDifference.Days;
 
-                        if (Convert.ToInt32(numberOfDays) <= 7)
-                        {
-                        
-                            cutOffFreqencyCellRange.Offset[xIndex2, 0].Value = ("=\'"
-                                        + (Ws.Name + ("\'!" + ActAddress)));
-                            xIndex2 = (xIndex2 + 1);
-                        }
+                    if (Convert.ToInt32(numberOfDays) <= 7)
+                    {
+
+                        cutOffFreqencyCellRange.Offset[xIndex2, 0].Value = ("=\'"
+                                    + (Ws.Name + ("\'!" + ActAddress)));
+                        xIndex2 = (xIndex2 + 1);
                     }
                 }
-                    xlWorkSheet.Application.ScreenUpdating = true;
+            }
+            xlWorkSheet.Application.ScreenUpdating = true;
 
             // Get max amplitude in each sheet
             maxAmplitudeCellRange = xlWorkSheet.Application.Cells[2, 5];
@@ -274,9 +270,10 @@ namespace Analysis
             xlWorkSheet.Application.ScreenUpdating = false;
             int xIndex3 = 0;
             foreach (Worksheet Ws in amplitudeExcel)
-            { 
-                if ((Ws.Name != ActWsName))
+            {
+                if (Ws.Name != ActWsName && !Ws.Name.StartsWith(DateTime.Now.ToString("yyMMdd")))
                 {
+                
                     var wsName = Ws.Name.ToString();
                     var year = string.Concat(wsName[0], wsName[1], wsName[2], wsName[3]);
                     var month = string.Concat(wsName[4], wsName[5]);
@@ -299,7 +296,6 @@ namespace Analysis
             xlWorkSheet.Application.ScreenUpdating = true;
 
 
-            // Plot Maximum Amplitude
             ChartObjects xlCharts = (Excel.ChartObjects)xlWorkSheet.ChartObjects(Type.Missing);
             ChartObject myChart = xlCharts.Add(700, 50, 300, 300);
             Chart maxAmplitudeChart = myChart.Chart;
@@ -315,7 +311,7 @@ namespace Analysis
 
             // X Axis
             Axis timeAxis = (Axis)maxAmplitudeChart.Axes(XlAxisType.xlCategory);
-           // timeAxis.TickLabels.NumberFormat = "[$-409]m/d/yy h:mm AM/PM;@";
+            // timeAxis.TickLabels.NumberFormat = "[$-409]m/d/yy h:mm AM/PM;@";
             timeAxis.TickLabelPosition = XlTickLabelPosition.xlTickLabelPositionHigh;
 
 
@@ -333,40 +329,25 @@ namespace Analysis
 
             // X Axis
             Axis timeAxis2 = (Axis)cutoFFFrequencyChart.Axes(XlAxisType.xlCategory);
-           // timeAxis2.TickLabels.NumberFormat = "[$-409]m/d/yy h:mm AM/PM;@";
+            // timeAxis2.TickLabels.NumberFormat = "[$-409]m/d/yy h:mm AM/PM;@";
             timeAxis2.TickLabelPosition = XlTickLabelPosition.xlTickLabelPositionHigh;
 
-
-
-            xlWorkBook.SaveAs(tbFilePath.Text, Excel.XlFileFormat.xlWorkbookNormal,
-            misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-
+            xlWorkBook.SaveAs(tbFilePath.Text, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
             xlWorkBook.Close(true, misValue, misValue);
-            xlApp.Application.Quit();
             xlApp.Quit();
 
-            ReleaseObject(xlWorkSheet);
-            ReleaseObject(xlWorkBook);
-            ReleaseObject(xlApp);
+            Marshal.ReleaseComObject(xlWorkSheet);
+            Marshal.ReleaseComObject(xlWorkBook);
+            Marshal.ReleaseComObject(xlApp);
+
+
+
             MessageBox.Show("Plot created");
 
-
-            //if (xlWorkSheet.Name.Contains(DateTime.Now.ToString("yyMMdd")))
-            //{
-            //    //DateTime d1 = new DateTime("yyMMdd");
-            //    //d1.Subtract(d2);
-
-            //    //DateTime myValue = Now();
-            //    //DateTime myBirthdate = new DateTime(1969, 12, 7);
-            //    //TimeSpan myAge;
-            //    //Date.Now.Subtract(myBirthdate);
-            //    //myAge = myAge.Add(new TimeSpan(100, 0, 0, 0));
-            //    //Console.WriteLine(myAge.TotalDays);
-            //    //Console.ReadLine();
-
-            //}
-
         }
+
+       
+  
 
         private void ListSheets()
         {
