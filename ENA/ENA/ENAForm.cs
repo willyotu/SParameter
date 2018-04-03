@@ -15,6 +15,8 @@ using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Threading;
+using System.Data.SQLite;
+
 
 namespace ENA
 {
@@ -27,6 +29,8 @@ namespace ENA
         private BackgroundWorker myWorker = new BackgroundWorker();
 
         bool bStopClicked = false;
+
+        private SQLiteConnection myConnection;
 
         public ENAForm(string visaAddress)
         {
@@ -343,7 +347,8 @@ namespace ENA
                 if (!sendingWorker.CancellationPending)//At each iteration of the loop, check if there is a cancellation request pending 
                 {
                     SParameterMeasurement();
-                    SaveSParameterExcel();
+                    // SaveSParameterExcel();
+                    Database();
                    // bRun.Enabled = true;
                     Timing();
                 }
@@ -588,6 +593,75 @@ namespace ENA
         private void ComboBLimitLineType_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void cbSaveToDB_CheckedChanged(object sender, EventArgs e)
+        {
+            Database();
+        }
+
+        private void Database()
+        {
+            double frequency;
+            double[] results;
+            double[] failedPoints;
+            double[] maxAmplitude;
+            double startFrequency;
+            double stopFrequency;
+            int points;
+            double steps;
+            string createTable = @"CREATE TABLE IF NOT EXISTS 'album' ( `Frequency` TEXT)";
+           
+            myConnection = new SQLiteConnection("Data Source = database.sqlite3");
+            if (!File.Exists(".database.sqlite3"))
+            {
+                SQLiteConnection.CreateFile("database.sqlite3");
+            }
+            using (myConnection = new SQLiteConnection("Data Source = database.sqlite3"))
+            {
+                using (SQLiteCommand myCommand = new SQLiteCommand(myConnection))
+                {
+                    
+
+                    OpenDbConnection();
+                    myCommand.CommandText = createTable;
+                    myCommand.ExecuteNonQuery();
+
+                    
+                    eNA.SCPI.SENSe.FREQuency.STARt.Query(out startFrequency);
+                    eNA.SCPI.SENSe.FREQuency.STOP.Query(out stopFrequency);
+                    eNA.SCPI.SENSe.SWEep.POINts.Query(out points);
+
+                    int row;
+                    steps = (stopFrequency - startFrequency) / points;
+                    row = 1;
+                   
+                    for (frequency = startFrequency; (frequency <= stopFrequency); frequency = (frequency + steps))
+                    {
+                        row = row + 1;
+                        string insertData = @"INSERT INTO album(Frequency) values(" + frequency + ")";
+                        myCommand.CommandText = insertData;
+                        myCommand.ExecuteNonQuery();
+                    }
+                    CloseDbConnection();
+                }
+            }
+            MessageBox.Show("DB saved");
+
+        }
+        private void OpenDbConnection()
+        {
+            if (myConnection.State != System.Data.ConnectionState.Open)
+            {
+                myConnection.Open();
+            }
+        }
+        private void CloseDbConnection()
+        {
+            if (myConnection.State != System.Data.ConnectionState.Closed)
+            {
+                myConnection.Close();
+            }
         }
     }
 }
