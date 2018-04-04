@@ -50,8 +50,6 @@
             this.stopFrequencyTB = new System.Windows.Forms.TextBox();
             this.startFrequencyTB = new System.Windows.Forms.TextBox();
             this.TPLimitTest = new System.Windows.Forms.TabPage();
-            this.button1 = new System.Windows.Forms.Button();
-            this.cbSaveToDB = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.GBLimitLine = new System.Windows.Forms.GroupBox();
@@ -65,8 +63,6 @@
             this.lLimit1StopFrequency = new System.Windows.Forms.Label();
             this.lLimit1StartFrequency = new System.Windows.Forms.Label();
             this.CBEnableLimitTest = new System.Windows.Forms.CheckBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudInterval)).BeginInit();
             this.TabControl.SuspendLayout();
             this.MeasurementTPage.SuspendLayout();
@@ -301,10 +297,6 @@
             // 
             // TPLimitTest
             // 
-            this.TPLimitTest.Controls.Add(this.textBox2);
-            this.TPLimitTest.Controls.Add(this.textBox1);
-            this.TPLimitTest.Controls.Add(this.button1);
-            this.TPLimitTest.Controls.Add(this.cbSaveToDB);
             this.TPLimitTest.Controls.Add(this.statusStrip1);
             this.TPLimitTest.Controls.Add(this.GBLimitLine);
             this.TPLimitTest.Controls.Add(this.bFilePath);
@@ -324,26 +316,6 @@
             this.TPLimitTest.TabIndex = 1;
             this.TPLimitTest.Text = "Measurement";
             this.TPLimitTest.UseVisualStyleBackColor = true;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(398, 234);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(85, 32);
-            this.button1.TabIndex = 37;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // cbSaveToDB
-            // 
-            this.cbSaveToDB.AutoSize = true;
-            this.cbSaveToDB.Location = new System.Drawing.Point(382, 190);
-            this.cbSaveToDB.Name = "cbSaveToDB";
-            this.cbSaveToDB.Size = new System.Drawing.Size(116, 17);
-            this.cbSaveToDB.TabIndex = 36;
-            this.cbSaveToDB.Text = "Save To Database";
-            this.cbSaveToDB.UseVisualStyleBackColor = true;
-            this.cbSaveToDB.CheckedChanged += new System.EventHandler(this.cbSaveToDB_CheckedChanged);
             // 
             // statusStrip1
             // 
@@ -473,22 +445,6 @@
             this.CBEnableLimitTest.UseVisualStyleBackColor = true;
             this.CBEnableLimitTest.CheckedChanged += new System.EventHandler(this.CBEnableLimitTest_CheckedChanged);
             // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(58, 227);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(66, 20);
-            this.textBox1.TabIndex = 38;
-            this.textBox1.Text = "john";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(58, 266);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(66, 20);
-            this.textBox2.TabIndex = 38;
-            this.textBox2.Text = "smith";
-            // 
             // ENAForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -555,10 +511,6 @@
         private System.Windows.Forms.GroupBox GBLimitLine;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
-        private System.Windows.Forms.CheckBox cbSaveToDB;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

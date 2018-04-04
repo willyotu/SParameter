@@ -37,7 +37,7 @@ namespace ENA
         public ENAForm(string visaAddress)
         {
             InitializeComponent();
-          //  ENAForm.CheckForIllegalCrossThreadCalls = false; // this is bad!
+           //  ENAForm.CheckForIllegalCrossThreadCalls = false; // this is bad!
             eNA = new AgENA_E5071(visaAddress);
             xlApp = new Excel.Application();
             myWorker.DoWork += new DoWorkEventHandler(myWorker_DoWork);
@@ -46,17 +46,13 @@ namespace ENA
             myWorker.WorkerReportsProgress = true;
             myWorker.WorkerSupportsCancellation = true;
 
-            IFBW = "70e3";
-            ifBWTB.Text = IFBW;
-            Points = "401";
-            pointsNUD.Value = Convert.ToDecimal(Points);
-            StartFrequency = "300e3";
-            startFrequencyTB.Text = StartFrequency;
-            StopFrequency = "8.5e9";
-            stopFrequencyTB.Text = StopFrequency;
-            SParameter = "S21";
-            sParameterTB.Text = SParameter;
-            
+         
+            ifBWTB.Text = "70e3";
+            pointsNUD.Value = Convert.ToDecimal("401");
+            startFrequencyTB.Text = "300e3";
+            stopFrequencyTB.Text = "8.5e9";
+            sParameterTB.Text = "S21";
+
             CBEnableLimitTest.Checked = true;
             CBBeeperWarning.Checked = false;
             
@@ -76,91 +72,23 @@ namespace ENA
             string excelName = tbFilePath.Text;
 
         }
-               
+
         private void ENAForm_Load(object sender, EventArgs e)
         {
             MeasurementSetup();
-            SParameterMeasurement();
         }
-        
+
         #region Stimulus Tab
         private void MeasurementSetup()
         {
             eNA.SCPI.SYSTem.PRESet.Command();
-            eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(Points));
-            eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToDouble(StartFrequency));
-            eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToDouble(StopFrequency));
-            eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(IFBW));
-            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, SParameter);
+            eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(pointsNUD.Value));
+            eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToDouble(startFrequencyTB.Text));
+            eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToDouble(stopFrequencyTB.Text));
+            eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(ifBWTB.Text));
+            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, sParameterTB.Text);
         }
-        private string _iFBW;
-        public string IFBW
-        {
-            get
-            {
-                return _iFBW;
-            }
-            set
-            {
-                _iFBW = value;
-            }
-        }
-        private void ifBWTB_TextChanged(object sender, EventArgs e)
-        {
-            IFBW = ifBWTB.Text;
-        }
-
-        private string _points;
-        public string Points
-        {
-            get
-            {
-                return _points;
-            }
-            set
-            {
-                _points = value;
-            }
-        }
-        private void pointsNUD_ValueChanged(object sender, EventArgs e)
-        {
-            Points = pointsNUD.Value.ToString();
-
-        }
-
-        private string _startFrequency;
-        public string StartFrequency
-        {
-            get
-            {
-                return _startFrequency;
-            }
-            set
-            {
-                _startFrequency = value;
-            }
-        }
-        private void startFrequencyTB_TextChanged(object sender, EventArgs e)
-        {
-            StartFrequency = startFrequencyTB.Text;
-        }
-
-        private string _stopFrequency;
-        public string StopFrequency
-        {
-            get
-            {
-                return _stopFrequency;
-            }
-            set
-            {
-                _stopFrequency = value;
-            }
-        }
-        private void stopFrequencyTB_TextChanged(object sender, EventArgs e)
-        {
-            StopFrequency = stopFrequencyTB.Text;
-        }
+      
         #endregion
 
         #region Measurement Tab
@@ -174,11 +102,11 @@ namespace ENA
                 double limitline1Amplitude = Convert.ToDouble(TBLimitStartAmplitude.Text);
                
 
-                eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(Points));
-                eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToDouble(StartFrequency));
-                eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToDouble(StopFrequency));
-                eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(IFBW));
-                eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, SParameter);
+                eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(pointsNUD.Value));
+                eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToDouble(startFrequencyTB.Text));
+                eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToDouble(stopFrequencyTB.Text));
+                eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(ifBWTB.Text));
+                eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, sParameterTB.Text);
                 eNA.SCPI.CALCulate.SELected.LIMit.STATe.Command(1, CBEnableLimitTest.Checked ? "ON" : "OFF");
                 eNA.SCPI.CALCulate.SELected.LIMit.DISPlay.STATe.Command(1, true);
                 eNA.SCPI.SYSTem.BEEPer.WARNing.STATe.Command(CBBeeperWarning.Checked);
@@ -235,22 +163,7 @@ namespace ENA
 
         }
 
-        private string _sParameter;
-        public string SParameter
-        {
-            get
-            {
-                return _sParameter;
-            }
-            set
-            {
-                _sParameter = value;
-            }
-        }
-        private void sParameterTB_TextChanged(object sender, EventArgs e)
-        {
-            SParameter = sParameterTB.Text;
-        }
+        
         private void CBLoadLimitLineTable_CheckedChanged(object sender, EventArgs e)
         {
             Excel.Application xlApp;
@@ -309,13 +222,11 @@ namespace ENA
         
         private void bRun_Click(object sender, EventArgs e)
         {
-
             if (!myWorker.IsBusy)//Check if the worker is already in progress
             {
                 bRun.Enabled = false;//Disable the Start button
                 myWorker.RunWorkerAsync();//Call the background worker
             }
-
         }
 
         private void bStop_Click(object sender, EventArgs e)
@@ -332,7 +243,8 @@ namespace ENA
             {
                 if (!sendingWorker.CancellationPending)//At each iteration of the loop, check if there is a cancellation request pending 
                 {
-                   // SParameterMeasurement();
+                    
+                    SParameterMeasurement();
                    // SaveSParameterExcel();
                    Database();
                     //Test();
@@ -461,8 +373,8 @@ namespace ENA
                 row = row + 1;
                 xlNewSheet.Cells[row, 1] = frequency;
             }
-            xlNewSheet.Cells[1, 2] = SParameter;
-            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, SParameter);
+            xlNewSheet.Cells[1, 2] = sParameterTB.Text;
+            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, sParameterTB.Text);
             eNA.SCPI.CALCulate.PARameter.SELect.Command(1u);
             eNA.SCPI.FORMat.DATA.Command("ASCii");
             eNA.SCPI.CALCulate.SELected.DATA.FDATa.QueryAsciiReal(1, out results);
@@ -532,7 +444,7 @@ namespace ENA
             oRng = xlWorkSheet.Range["A1:A" + points + ",B1:B" + points + ""];
             chart.ChartType = XlChartType.xlXYScatterSmoothNoMarkers;
             chart.ChartStyle = 7;
-            chart.ChartWizard(Source: oRng, Title: SParameter, HasLegend: true);
+            chart.ChartWizard(Source: oRng, Title: sParameterTB.Text, HasLegend: true);
             chart.ChartType = XlChartType.xlLine;
             Axis axisS21 = (Axis)chart.Axes(XlAxisType.xlValue);
             axisS21.TickLabels.NumberFormat = "#,##0.00";
@@ -602,65 +514,100 @@ namespace ENA
             int i;
             int j;
             List<double> sparm = new List<double>();
-          
-            eNA.SCPI.SENSe.FREQuency.STARt.Query(out startFrequency);
-            eNA.SCPI.SENSe.FREQuency.STOP.Query(out stopFrequency);
+
+            //eNA.SCPI.SENSe.FREQuency.STARt.Query(out startFrequency);
+            //eNA.SCPI.SENSe.FREQuency.STOP.Query(out stopFrequency);
             eNA.SCPI.SENSe.SWEep.POINts.Query(out points);
-            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, SParameter);
-            eNA.SCPI.CALCulate.PARameter.SELect.Command(1u);
+            //eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, sParameterTB.Text);
+            //eNA.SCPI.CALCulate.PARameter.SELect.Command(1u);
             eNA.SCPI.FORMat.DATA.Command("ASCii");
-            eNA.SCPI.CALCulate.SELected.DATA.FDATa.QueryAsciiReal(1, out results);
             eNA.SCPI.SENSe.FREQuency.DATA.QueryAsciiReal(1, out frequencyResults);
+            eNA.SCPI.CALCulate.SELected.DATA.FDATa.QueryAsciiReal(1, out results);
             eNA.SCPI.CALCulate.SELected.LIMit.REPort.DATA.QueryAsciiReal(1, out failedPoints);
             double cutOffFrequency = failedPoints[0];
             eNA.SCPI.CALCulate.SELected.FUNCtion.DATA.QueryAsciiReal(1, out amplitude);
             double maxAmplitude = amplitude[0];
-            
+
             DateTime time = DateTime.Now;
 
-            string createTable = @"CREATE TABLE IF NOT EXISTS 'Sparameter'( 'ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,`Frequency` REAL, 'SParameter' REAL)";
-            string createTrendTable = @"CREATE TABLE IF NOT EXISTS 'Trend' ('ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 'TimeCaptured' TEXT,'CutOffFrequency' REAL,'MaximumAmplitude' REAL)";
-
-            myConnection = new SQLiteConnection("Data Source = database.sqlite3");
-            if (!File.Exists(".database.sqlite3"))
+            string createTable =
+                @"CREATE TABLE IF NOT EXISTS 'Sparameter'( 'ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,`Frequency` REAL, 'SParameter' REAL)";
+            string createTrendTable =
+                @"CREATE TABLE IF NOT EXISTS 'Trend' ('ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 'TimeCaptured' TEXT,'CutOffFrequency' REAL,'MaximumAmplitude' REAL)";
+            try
             {
-                SQLiteConnection.CreateFile("database.sqlite3");
-            }
-            using (myConnection = new SQLiteConnection("Data Source = database.sqlite3"))
-            {
-                using (SQLiteCommand myCommand = new SQLiteCommand( myConnection))
+                myConnection = new SQLiteConnection("Data Source = database.sqlite3");
+                if (!File.Exists("database.sqlite3"))
                 {
-                    OpenDbConnection();
-                    myCommand.CommandText = createTable;
-                    myCommand.ExecuteNonQuery();
-                    
-                    for (i = 0; (i <= (results.Length)-2); i = (i + 2))
+                    SQLiteConnection.CreateFile("database.sqlite3");
+                    using (myConnection = new SQLiteConnection("Data Source = database.sqlite3"))
                     {
-                       resultsp = results.ElementAt(i);
-                       sparm.Add(resultsp);
+                        using (SQLiteCommand myCommand = new SQLiteCommand(myConnection))
+                        {
+                            OpenDbConnection();
+                            myCommand.Prepare();
+                            myCommand.CommandText = createTable;
+                            myCommand.CommandText = createTrendTable;
+                            myCommand.ExecuteNonQuery();
+                            CloseDbConnection();
+                        }
                     }
-                    
-                    for (j= 0; j<points;j++)
-                    {
-                       result = sparm.ElementAt(j);
-                       frequency = frequencyResults.ElementAt(j);
-                       string insertData = @"INSERT INTO sparameter(Frequency,SParameter) values(" + frequency + "," + result+")";
-                       myCommand.CommandText = insertData;
-                       myCommand.ExecuteNonQuery();
-                    }
-                    myCommand.CommandText = createTrendTable;
-                    myCommand.ExecuteNonQuery();
-                    string insertTrendData = @"INSERT INTO trend(TimeCaptured,CutOffFrequency,MaximumAmplitude) values(@timevalue,@cutOffFrequencyvalue, @maxAmplitudevalue)";
-                    myCommand.CommandText = insertTrendData;
-                    myCommand.Parameters.AddWithValue("@timevalue", time);
-                    myCommand.Parameters.AddWithValue("@cutOffFrequencyvalue", cutOffFrequency);
-                    myCommand.Parameters.AddWithValue("@maxAmplitudevalue", maxAmplitude);
-                    myCommand.ExecuteNonQuery();
-                   CloseDbConnection();
                 }
             }
-              MessageBox.Show("DB saved");
-       }
+            catch (Exception)
+            {
+                MessageBox.Show("Please close database before you write to it");
+            }
+
+            using (myConnection = new SQLiteConnection("Data Source = database.sqlite3"))
+            {
+                using (SQLiteCommand myCommand = new SQLiteCommand(myConnection))
+                {
+                    try
+                    {
+                        OpenDbConnection();
+
+
+                        for (i = 0; (i <= (results.Length) - 2); i = (i + 2))
+                        {
+                            resultsp = results.ElementAt(i);
+                            sparm.Add(resultsp);
+                        }
+
+                        for (j = 0; j < points; j++)
+                        {
+                            result = sparm.ElementAt(j);
+                            frequency = frequencyResults.ElementAt(j);
+                            myCommand.CommandText = "CREATE TABLE IF NOT EXISTS 'Sparameter'( 'ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,`Frequency` REAL, 'SParameter' REAL)";
+                            myCommand.Prepare();
+                            myCommand.ExecuteNonQuery();
+                            myCommand.CommandText = "INSERT INTO sparameter(Frequency,SParameter) values(" +frequency +"," + result + ")";
+                            myCommand.Prepare();
+                            myCommand.ExecuteNonQuery();
+                        }
+                       
+                        myCommand.CommandText = "INSERT INTO trend(TimeCaptured,CutOffFrequency,MaximumAmplitude) values(@timevalue,@cutOffFrequencyvalue, @maxAmplitudevalue)";
+                        myCommand.Prepare();
+                        myCommand.Parameters.AddWithValue("@timevalue", time);
+                        myCommand.Parameters.AddWithValue("@cutOffFrequencyvalue", cutOffFrequency);
+                        myCommand.Parameters.AddWithValue("@maxAmplitudevalue", maxAmplitude);
+                        myCommand.ExecuteNonQuery();
+
+                    }
+                    catch (SQLiteException e)
+                    {
+                        MessageBox.Show(e.Message);
+                    }
+                    finally
+                    {
+                        CloseDbConnection();
+                        MessageBox.Show("DB saved");
+                    }
+
+                }
+            }
+        }
+
         private void OpenDbConnection()
         {
             if (myConnection.State != System.Data.ConnectionState.Open)
