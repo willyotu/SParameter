@@ -14,6 +14,11 @@ using System.Runtime.InteropServices;
 
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Threading;
+using System.Data.SQLite;
+using System.Drawing.Text;
+using Agilent.CommandExpert.ScpiNet.AgENA_E5071_A_11_22.SCPI.DISPlay.ANNotation.FREQuency;
+
 
 namespace ENA
 {
@@ -22,413 +27,143 @@ namespace ENA
         Workbook xlWorkBook;
         Worksheet xlWorkSheet;
         private AgENA_E5071 eNA;
-       
         private Excel.Application xlApp;
-        private string resultsFile = "Results.txt";
-        private string resultsFileFullPath;
-        private string fileDirectory = @"C:\Users\wilattoh\Documents";
+        private BackgroundWorker myWorker = new BackgroundWorker();
 
-       
-        public ENAForm( string visaAddress)
+        bool bStopClicked = false;
+
+        private SQLiteConnection myConnection;
+
+        public ENAForm(string visaAddress)
         {
             InitializeComponent();
+           //  ENAForm.CheckForIllegalCrossThreadCalls = false; // this is bad!
             eNA = new AgENA_E5071(visaAddress);
             xlApp = new Excel.Application();
-            IFBW = "70e3";
-            ifBWTB.Text = IFBW;
-            Points = "401";
-            pointsNUD.Value = Convert.ToDecimal(Points);
-            StartFrequency = "300e3";
-            startFrequencyTB.Text = StartFrequency;
-            StopFrequency = "8.5e9";
-            stopFrequencyTB.Text = StopFrequency;
-            SParameter = "S21";
-            sParameterTB.Text = SParameter;
-            
-            CBEnableLimitTest.Checked = false;
+            myWorker.DoWork += new DoWorkEventHandler(myWorker_DoWork);
+            myWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(myWorker_RunWorkerCompleted);
+            myWorker.ProgressChanged += new ProgressChangedEventHandler(myWorker_ProgressChanged);
+            myWorker.WorkerReportsProgress = true;
+            myWorker.WorkerSupportsCancellation = true;
+
+         
+            ifBWTB.Text = "70e3";
+            pointsNUD.Value = Convert.ToDecimal("401");
+            startFrequencyTB.Text = "300e3";
+            stopFrequencyTB.Text = "8.5e9";
+            sParameterTB.Text = "S21";
+
+            CBEnableLimitTest.Checked = true;
             CBBeeperWarning.Checked = false;
-            ComboBLimitLineType.SelectedIndex = 0;
-            ComboBLimitLineType.Hide();
-            lLimitLineType.Hide();
-            GBLimitLine1.Hide();
+            
+            GBPeakSearch.Show();
+            GBLimitLine.Show();
        
             TBLimit1StartFrequency.Text = "1e9";
             TBLimit1StopFrequency.Text  = "1.1e9";
-            TBLimit1StartAmplitude.Text = "0";
+            TBLimitStartAmplitude.Text = "-30";
 
-            nudInterval.Value = 3;
-            resultsFileFullPath = fileDirectory + @"\" + resultsFile;
-          }
+            nudInterval.Value = 10;
+     
+            bStop.Click += new System.EventHandler(bStop_Click);
+         
 
-        // Load the ENA Measurement Form 
+            tbFilePath.Text = @"C:\Users\wilattoh\Documents\csharp-Excel.xls";
+            string excelName = tbFilePath.Text;
+
+        }
+
         private void ENAForm_Load(object sender, EventArgs e)
         {
             MeasurementSetup();
         }
 
-        // Run Button
-        private void bRun_Click(object sender, EventArgs e)
-        {
-            SParameterMeasurement();
-        }
-
-        // Stop Button
-        private void bStop_Click(object sender, EventArgs e)
-        {
-            this.Close();
-            System.Windows.Forms.Application.Exit();
-        }
-
+        #region Stimulus Tab
         private void MeasurementSetup()
         {
             eNA.SCPI.SYSTem.PRESet.Command();
-            eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(Points));
-            eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToDouble(StartFrequency));
-            eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToDouble(StopFrequency));
-            eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(IFBW));
-            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, SParameter);
+            eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(pointsNUD.Value));
+            eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToDouble(startFrequencyTB.Text));
+            eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToDouble(stopFrequencyTB.Text));
+            eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(ifBWTB.Text));
+            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, sParameterTB.Text);
         }
-        
-        // Measures S Parameter
+      
+        #endregion
+
+        #region Measurement Tab
         private void SParameterMeasurement()
         {
             try
             {
-                // Begin timing and start capturing data.
-                DateTime startTime = DateTime.Now;
-                bRun.Enabled = false;
-                double elapsed = 0;
-                int elapsedTime = 0;
+                //bRun.Enabled = false;
+                double limitline1StartF = Convert.ToDouble(startFrequencyTB.Text);
+                double limitline1StopF = Convert.ToDouble(stopFrequencyTB.Text);
+                double limitline1Amplitude = Convert.ToDouble(TBLimitStartAmplitude.Text);
+               
+
+                eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(pointsNUD.Value));
+                eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToDouble(startFrequencyTB.Text));
+                eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToDouble(stopFrequencyTB.Text));
+                eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(ifBWTB.Text));
+                eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, sParameterTB.Text);
+                eNA.SCPI.CALCulate.SELected.LIMit.STATe.Command(1, CBEnableLimitTest.Checked ? "ON" : "OFF");
+                eNA.SCPI.CALCulate.SELected.LIMit.DISPlay.STATe.Command(1, true);
+                eNA.SCPI.SYSTem.BEEPer.WARNing.STATe.Command(CBBeeperWarning.Checked);
+
                 
-                int interval = Convert.ToInt32(nudInterval.Value);
-                int intervalConverted = interval * 1000;
-                double limitline1StartF = Convert.ToDouble(TBLimit1StartFrequency.Text);
-                double limitline1StopF = Convert.ToDouble(TBLimit1StopFrequency.Text);
-                double limitline1Amplitude = Convert.ToDouble(TBLimit1StartAmplitude.Text);
 
-
-                // Start capturing data 
-             //while{bStop_Click event has not changed}
-                    DateTime stopTime = DateTime.Now;
-                    elapsed = stopTime.Subtract(startTime).TotalSeconds;
-                    elapsedTime = Convert.ToInt32(elapsed);
-
-                    double limitLineType;
-                   
-                    eNA.SCPI.SENSe.SWEep.POINts.Command(1, Convert.ToInt32(Points));
-                    eNA.SCPI.SENSe.FREQuency.STARt.Command(1, Convert.ToDouble(StartFrequency));
-                    eNA.SCPI.SENSe.FREQuency.STOP.Command(1, Convert.ToDouble(StopFrequency));
-                    eNA.SCPI.SENSe.BANDwidth.RESolution.Command(1, Convert.ToDouble(IFBW));
-                    eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, SParameter);
-                    eNA.SCPI.CALCulate.SELected.LIMit.STATe.Command(1, CBEnableLimitTest.Checked ? "ON" : "OFF");
-                    eNA.SCPI.CALCulate.SELected.LIMit.DISPlay.STATe.Command(1, true);
-                    eNA.SCPI.SYSTem.BEEPer.WARNing.STATe.Command(CBBeeperWarning.Checked);
-                
-                    if ((ComboBLimitLineType.SelectedIndex == 0))
-                        limitLineType = 1;
-                    else if (ComboBLimitLineType.SelectedIndex == 1)
-                        limitLineType = 2;
-                    else
+                eNA.SCPI.CALCulate.SELected.LIMit.DATA.CommandAsciiReal(1,
+                    new double[]
                     {
-                        limitLineType = 0;
-                    }
-           
-                    eNA.SCPI.CALCulate.SELected.LIMit.DATA.CommandAsciiReal(1,
-                        new double[]
-                        {
-                            1, limitLineType, limitline1StartF, limitline1StopF, limitline1Amplitude,
-                            limitline1Amplitude
-                        });
-                
-                    ImportData();
-                    bRun.Enabled = true;
-                    System.Threading.Thread.Sleep(intervalConverted);
-                    System.Windows.Forms.Application.DoEvents();
-            
+                        1, 1, limitline1StartF, limitline1StopF, limitline1Amplitude,
+                        limitline1Amplitude
+                    });
+                eNA.SCPI.CALCulate.SELected.FUNCtion.TYPE.Command(1u, "MAXimum");
+                eNA.SCPI.CALCulate.SELected.FUNCtion.EXECute.Command(1u);
 
-               
-               
+                //bRun.Enabled = true;
+              
             }
             catch (Exception e)
             {
-                MessageBox.Show("Check VISA Address \n{0}" + e);
+                MessageBox.Show(e.Message);
             }
         }
-        private string _iFBW;
-        public string IFBW
-        {
-            get
-            {
-                return _iFBW;
-            }
-            set
-            {
-                _iFBW = value;
-            }
-        }
-        private void ifBWTB_TextChanged(object sender, EventArgs e)
-        {
-            IFBW = ifBWTB.Text;
-        }
-
-        private string _points;
-        public string Points
-        {
-            get
-            {
-                return _points;
-            }
-            set
-            {
-                _points = value;
-            }
-        }
-        private void pointsNUD_ValueChanged(object sender, EventArgs e)
-        {
-            Points = pointsNUD.Value.ToString();
-
-        }
-
-        private string _startFrequency;
-        public string StartFrequency
-        {
-            get
-            {
-                return _startFrequency;
-            }
-            set
-            {
-                _startFrequency = value;
-            }
-        }
-        private void startFrequencyTB_TextChanged(object sender, EventArgs e)
-        {
-            StartFrequency = startFrequencyTB.Text;
-        }
-        
-        private string _stopFrequency;
-        public string StopFrequency
-        {
-            get
-            {
-                return _stopFrequency;
-            }
-            set
-            {
-                _stopFrequency = value;
-            }
-        }
-        private void stopFrequencyTB_TextChanged(object sender, EventArgs e)
-        {
-            StopFrequency = stopFrequencyTB.Text;
-        }
-
-        private string _sParameter;
-        public string SParameter
-        {
-            get
-            {
-                return _sParameter;
-            }
-            set
-            {
-                _sParameter = value;
-            }
-        }
-
-       
-
-        private void sParameterTB_TextChanged(object sender, EventArgs e)
-        {
-            SParameter = sParameterTB.Text;
-        }
-        
-        private void CreateExcel()
-        {
-            
-            if (xlApp == null)
-            {
-                MessageBox.Show("Excel is not properly installed!!");
-                return;
-            }
-
-                       
-            object misValue = System.Reflection.Missing.Value;
-
-            xlWorkBook = xlApp.Workbooks.Add(misValue);
-            xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-                       
-            xlWorkBook.SaveAs(@"C:\Users\wilattoh\Documents\csharp-Excel.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-            xlWorkBook.Close(true, misValue, misValue);
-            xlApp.Quit();
-
-            Marshal.ReleaseComObject(xlWorkSheet);
-            Marshal.ReleaseComObject(xlWorkBook);
-            Marshal.ReleaseComObject(xlApp);
-        }
-
-        private void releaseObject(object obj)
+        // Choose excel file to save.
+        private void bFilePath_Click(object sender, EventArgs e)
         {
             try
             {
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
-                obj = null;
-            }
-            catch (Exception ex)
-            {
-                obj = null;
-                MessageBox.Show("Exception Occured while releasing object " + ex.ToString());
-            }
-            finally
-            {
-                GC.Collect();
-            }
-        }
+                SaveFileDialog SaveFileDialog = new SaveFileDialog();
+                SaveFileDialog.InitialDirectory = @"C:\";
+                SaveFileDialog.Title = "Save Text Files";
+                SaveFileDialog.CheckFileExists = true;
+                SaveFileDialog.CheckPathExists = true;
 
-        private void ImportData()
-        {
-            Excel.Application xlApp = new Microsoft.Office.Interop.Excel.Application();
-            if (xlApp == null)
-            {
-                MessageBox.Show("Excel is not properly installed!!");
-                return;
-            }
 
-            xlApp.DisplayAlerts = false;
-            string filePath = @"C:\Users\wilattoh\Documents\csharp-Excel.xls";
-            if (!System.IO.File.Exists(filePath))
-            {
-                CreateExcel();
-            }
-            object misValue = System.Reflection.Missing.Value;
-            Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(filePath, 0, false, 5, "", "", false, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "", true, false, 0, true, false, false);
-            Excel.Sheets worksheets = xlWorkBook.Worksheets;
+                SaveFileDialog.DefaultExt = "xls";
+                SaveFileDialog.Filter = "Excel files (*.xls)|*.xls|All files(*.*)|*.*";
+                SaveFileDialog.FilterIndex = 2;
+                SaveFileDialog.RestoreDirectory = true;
+                //openFileDialog.ReadOnlyChecked = true;
+                //openFileDialog.ShowReadOnly = true;
 
-            var xlNewSheet = (Excel.Worksheet)worksheets.Add(worksheets[1], Type.Missing, Type.Missing, Type.Missing);
-
-            xlNewSheet.Name = DateTime.Now.ToString("yyyyMMddHHmmss");
-       
-            double[] results;
-            double[] failedPoints;
-            xlNewSheet.Cells[1, 1] = "Frequency";
-
-            double startFrequency;
-            double stopFrequency;
-            int points;
-            double steps;
-            eNA.SCPI.SENSe.FREQuency.STARt.Query(out startFrequency);
-            eNA.SCPI.SENSe.FREQuency.STOP.Query(out stopFrequency);
-            eNA.SCPI.SENSe.SWEep.POINts.Query(out points);
-
-            int row;
-            steps = (stopFrequency - startFrequency) / points;
-            row = 1;
-            double frequency;
-            for (frequency = startFrequency; (frequency <= stopFrequency); frequency = (frequency + steps))
-            {
-                row = row + 1;
-                xlNewSheet.Cells[row, 1] = frequency;
-            }
-            xlNewSheet.Cells[1, 2] = SParameter;
-            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, SParameter);
-            eNA.SCPI.CALCulate.PARameter.SELect.Command(1u);
-            eNA.SCPI.FORMat.DATA.Command("ASCii");
-            eNA.SCPI.CALCulate.SELected.DATA.FDATa.QueryAsciiReal(1, out results);
-
-            row = 1;
-            int i;
-            for (i = 0; (i <= results.Length); i = (i + 2))
-            {
-                object result = null;
-                result = results.ElementAt(i);
-                row = (row + 1);
-
-                xlNewSheet.Cells[row, 2] = result;
-                if ((row == (points + 1)))
+                if (SaveFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    break;
+                    tbFilePath.Text = SaveFileDialog.FileName;
                 }
+
             }
-
-
-            xlNewSheet.Cells[1, 3] = "Failed Points";
-            eNA.SCPI.CALCulate.SELected.LIMit.REPort.DATA.QueryAsciiReal(1, out failedPoints);
-            row = 1;
-            
-            foreach(var point in failedPoints)
+            catch (Exception error)
             {
-                row = row + 1;
-                xlNewSheet.Cells[row, 3] = point;
 
-            }
-
-                
-             PlotSParameter(xlWorkBook, points);
-
-            xlNewSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-            xlNewSheet.Select();
-
-            xlWorkBook.SaveAs(@"C:\Users\wilattoh\Documents\csharp-Excel.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-            xlWorkBook.Close(true, misValue, misValue);
-            xlApp.Quit();
-            releaseObject(xlNewSheet);
-            releaseObject(worksheets);
-            releaseObject(xlWorkBook);
-            releaseObject(xlApp);
-                      
-        }
-
-        private void PlotSParameter(Workbook xlWorkBook, int points)
-        {
-            Range oRng;
-            xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-
-            ChartObjects xlCharts = (Excel.ChartObjects)xlWorkSheet.ChartObjects(Type.Missing);
-            ChartObject myChart = (Excel.ChartObject)xlCharts.Add(700, 50, 300, 300);
-            Chart chart = myChart.Chart;
-            oRng = xlWorkSheet.Range["A1:A" + points + ",B1:B" + points + ""];
-            chart.ChartType = XlChartType.xlXYScatterSmoothNoMarkers;
-            chart.ChartStyle = 7;
-            chart.ChartWizard(Source: oRng, Title: SParameter, HasLegend: true);
-            chart.ChartType = XlChartType.xlLine;
-            Axis axisS21 = (Axis)chart.Axes(XlAxisType.xlValue);
-            axisS21.TickLabels.NumberFormat = "#,##0.00";
-            axisS21.MaximumScale = 20;
-            axisS21.MinimumScale = -140;
-            axisS21.HasMajorGridlines = false;
-            Axis axisCatS21 = (Axis)chart.Axes(XlAxisType.xlCategory);
-            axisCatS21.TickLabels.NumberFormat = "0.00E+00";
-            axisCatS21.TickLabelPosition = XlTickLabelPosition.xlTickLabelPositionHigh;
-        }
-
-        // Select a file from directory using File browser.
-        private void Select_File(ref string Filename, ref bool Filename_Changed, string InitialDirectory = ".")
-        {
-            Filename_Changed = false;
-
-            OpenFileDialog openFileDialogReadFile = new OpenFileDialog();
-            openFileDialogReadFile.InitialDirectory = InitialDirectory;
-            openFileDialogReadFile.RestoreDirectory = true;
-
-            openFileDialogReadFile.Multiselect = false;
-
-            if (openFileDialogReadFile.ShowDialog() == DialogResult.OK)
-            {
-                Filename = openFileDialogReadFile.FileName;
-                Filename_Changed = true;
+                MessageBox.Show(error.Message);
             }
 
         }
 
-        // Show selected file path on GUI
-        private void FilePath_Click(object sender, EventArgs e)
-        {
-            bool Filename_Changed = false;
-
-            Select_File(ref resultsFile, ref Filename_Changed, fileDirectory);
-            resultsFileFullPath = resultsFile;
-            if (Filename_Changed) { tbFilePath.Text = resultsFile; };
-        }
+        
         private void CBLoadLimitLineTable_CheckedChanged(object sender, EventArgs e)
         {
             Excel.Application xlApp;
@@ -469,26 +204,474 @@ namespace ENA
         }
         private void CBEnableLimitTest_CheckedChanged(object sender, EventArgs e)
         {
+            
             if (!CBEnableLimitTest.Checked)
             {
-                ComboBLimitLineType.Hide();
-                lLimitLineType.Hide();
-                GBLimitLine1.Hide();
-               
+                GBLimitLine.Hide();
+                GBPeakSearch.Hide();
+
             }
             else
             {
-                ComboBLimitLineType.Show();
-                lLimitLineType.Show();
-                GBLimitLine1.Show();
+                GBLimitLine.Show();
+                GBPeakSearch.Show();
+            }
+            
+
+        }
+        
+        private void bRun_Click(object sender, EventArgs e)
+        {
+            if (!myWorker.IsBusy)//Check if the worker is already in progress
+            {
+                bRun.Enabled = false;//Disable the Start button
+                myWorker.RunWorkerAsync();//Call the background worker
+            }
+        }
+
+        private void bStop_Click(object sender, EventArgs e)
+        {
+           // bStopClicked = true;
+            myWorker.CancelAsync();//Issue a cancellation request to stop the background worker
+        }
+
+        protected void myWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker sendingWorker = (BackgroundWorker)sender;//Capture the BackgroundWorker that fired the event
+
+            while (!e.Cancel)//Continue measurement till  stop button clicked
+            {
+                if (!sendingWorker.CancellationPending)//At each iteration of the loop, check if there is a cancellation request pending 
+                {
+                    
+                    SParameterMeasurement();
+                   // SaveSParameterExcel();
+                   Database();
+                    //Test();
+                   // bRun.Enabled = true;
+                    Timing();
+                }
+                else
+                {
+                    e.Cancel = true;//If a cancellation request is pending, assign this flag a value of true
+                    break;         // If a cancellation request is pending, break to exit the loop
+                }
              }
+        }
+    
+        protected void myWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (!e.Cancelled && e.Error == null)//Check if the worker has been canceled or if an error occurred
+            {
+
+                lblStatus.Text = "Measurement Completed";
+            }
+            else if (e.Cancelled)
+            {
+                lblStatus.Text = "User Cancelled";
+            }
+            else
+            {
+                lblStatus.Text = "An error has occurred";
+            }
+            bRun.Enabled = true; // re enable start button
 
         }
 
-        private void nudDuration_ValueChanged(object sender, EventArgs e)
+        protected void myWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            //Show the progress to the user based on the input we got from the background worker
+            lblStatus.Text = string.Format("To to next capture: {0}...", e.ProgressPercentage);
+        }
+
+
+        #endregion
+                
+        #region Excel functions and Timing
+        private void CreateExcel()
+        {
+
+            if (xlApp == null)
+            {
+                MessageBox.Show("Excel is not properly installed!!");
+                return;
+            }
+
+
+            object misValue = System.Reflection.Missing.Value;
+
+            xlWorkBook = xlApp.Workbooks.Add(misValue);
+            xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+
+            xlWorkBook.SaveAs(tbFilePath.Text, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+            xlWorkBook.Close(true, misValue, misValue);
+            xlApp.Quit();
+
+            Marshal.ReleaseComObject(xlWorkSheet);
+            Marshal.ReleaseComObject(xlWorkBook);
+            Marshal.ReleaseComObject(xlApp);
+        }
+        private void ReleaseObject(object obj)
+        {
+            try
+            {
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
+                obj = null;
+            }
+            catch (Exception ex)
+            {
+                obj = null;
+                MessageBox.Show("Exception Occured while releasing object " + ex.ToString());
+            }
+            finally
+            {
+                GC.Collect();
+            }
+        }
+        private void SaveSParameterExcel()
+        {
+            Excel.Application xlApp = new Microsoft.Office.Interop.Excel.Application();
+            if (xlApp == null)
+            {
+                MessageBox.Show("Excel is not properly installed!!");
+                return;
+            }
+
+            xlApp.DisplayAlerts = false;
+            string filePath = tbFilePath.Text;
+            if (!System.IO.File.Exists(filePath))
+            {
+                CreateExcel();
+            }
+            object misValue = System.Reflection.Missing.Value;
+            Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(filePath, 0, false, 5, "", "", false, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "", true, false, 0, true, false, false);
+            Excel.Sheets worksheets = xlWorkBook.Worksheets;
+
+            var xlNewSheet = (Excel.Worksheet)worksheets.Add(worksheets[1], Type.Missing, Type.Missing, Type.Missing);
+
+            xlNewSheet.Name = DateTime.Now.ToString("yyyyMMddHHmmss");
+           
+            double[] results;
+            double[] failedPoints;
+            double[] maxAmplitude;
+            xlNewSheet.Cells[1, 1] = "Frequency";
+
+            double startFrequency;
+            double stopFrequency;
+            int points;
+            double steps;
+            eNA.SCPI.SENSe.FREQuency.STARt.Query(out startFrequency);
+            eNA.SCPI.SENSe.FREQuency.STOP.Query(out stopFrequency);
+            eNA.SCPI.SENSe.SWEep.POINts.Query(out points);
+
+            int row;
+            steps = (stopFrequency - startFrequency) / points;
+            row = 1;
+            double frequency;
+            for (frequency = startFrequency; (frequency <= stopFrequency); frequency = (frequency + steps))
+            {
+                row = row + 1;
+                xlNewSheet.Cells[row, 1] = frequency;
+            }
+            xlNewSheet.Cells[1, 2] = sParameterTB.Text;
+            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, sParameterTB.Text);
+            eNA.SCPI.CALCulate.PARameter.SELect.Command(1u);
+            eNA.SCPI.FORMat.DATA.Command("ASCii");
+            eNA.SCPI.CALCulate.SELected.DATA.FDATa.QueryAsciiReal(1, out results);
+
+            row = 1;
+            int i;
+            for (i = 0; (i <= results.Length); i = (i + 2))
+            {
+                object result = null;
+                result = results.ElementAt(i);
+                row = (row + 1);
+
+                xlNewSheet.Cells[row, 2] = result;
+                if ((row == (points + 1)))
+                {
+                    break;
+                }
+            }
+
+            xlNewSheet.Cells[1, 3] = "Time captured";
+            row = 1;
+            row = row + 1;
+            xlNewSheet.Cells[row, 3] = DateTime.Now;
+          // xlNewSheet.Range["C2"].NumberFormat = "yy/MM/d/HH:mm:ss";
+            xlNewSheet.Columns.AutoFit();
+
+            xlNewSheet.Cells[1, 4] = "Cut Off Frequency";
+            eNA.SCPI.CALCulate.SELected.LIMit.REPort.DATA.QueryAsciiReal(1, out failedPoints);
+            row = 1;
+            row = row + 1;
+            xlNewSheet.Cells[row, 4] = failedPoints[0];
+
+
+            xlNewSheet.Cells[1, 5] = "Maximum Amplitude";
+            eNA.SCPI.CALCulate.SELected.FUNCtion.DATA.QueryAsciiReal(1, out maxAmplitude);
+            row = 1;
+            row = row + 1;
+            xlNewSheet.Cells[row, 5] = maxAmplitude[0];
+
+           
+
+            PlotSParameter(xlWorkBook, points);
+
+            xlNewSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+            xlNewSheet.Select();
+            xlWorkBook.SaveAs(tbFilePath.Text, Excel.XlFileFormat.xlWorkbookNormal,
+                  misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+
+             xlWorkBook.Close(true, misValue, misValue);
+           
+            xlApp.Application.Quit();
+            xlApp.Quit();
+            ReleaseObject(xlNewSheet);
+            ReleaseObject(worksheets);
+            ReleaseObject(xlWorkBook);
+            ReleaseObject(xlApp);
+            KillSpecificExcelFileProcess(tbFilePath.Text);
+        }
+        private void PlotSParameter(Workbook xlWorkBook, int points)
+        {
+            Range oRng;
+            xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+
+            ChartObjects xlCharts = (Excel.ChartObjects)xlWorkSheet.ChartObjects(Type.Missing);
+            ChartObject myChart = xlCharts.Add(700, 50, 300, 300);
+            Chart chart = myChart.Chart;
+            oRng = xlWorkSheet.Range["A1:A" + points + ",B1:B" + points + ""];
+            chart.ChartType = XlChartType.xlXYScatterSmoothNoMarkers;
+            chart.ChartStyle = 7;
+            chart.ChartWizard(Source: oRng, Title: sParameterTB.Text, HasLegend: true);
+            chart.ChartType = XlChartType.xlLine;
+            Axis axisS21 = (Axis)chart.Axes(XlAxisType.xlValue);
+            axisS21.TickLabels.NumberFormat = "#,##0.00";
+            axisS21.MaximumScale = 20;
+            axisS21.MinimumScale = -140;
+            axisS21.HasMajorGridlines = false;
+            Axis axisCatS21 = (Axis)chart.Axes(XlAxisType.xlCategory);
+            axisCatS21.TickLabels.NumberFormat = "0.00E+00";
+            axisCatS21.TickLabelPosition = XlTickLabelPosition.xlTickLabelPositionHigh;
+        }
+        private void Timing()
+        {
+            //Create an instance of StopWatch
+            Stopwatch watch = new Stopwatch();
+
+            //Start the StopWatch
+            watch.Start();
+
+            //Perform Some Action
+            System.Threading.Thread.Sleep(Convert.ToInt32(nudInterval.Value) * 1000);
+
+            //Stop the StopWatch
+            watch.Stop();
+
+            //Check Elapsed Time
+            Console.WriteLine("Time elapsed as per stopwatch: {0} ",
+
+            watch.Elapsed);
+
+        }
+
+        #endregion
+
+        private void KillSpecificExcelFileProcess(string excelName)
+        {
+            var processes = from p in Process.GetProcessesByName("EXCEL")
+                            select p;
+
+            foreach (var process in processes)
+            {
+                if (process.MainWindowTitle == "Microsoft Excel - " + excelName)
+                    process.Kill();
+            }
+        }
+        private void ComboBLimitLineType_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
+
+        private void cbSaveToDB_CheckedChanged(object sender, EventArgs e)
+        {
+            Database();
+        }
+
+        private void Database()
+        {
+            double frequency;
+            double[] results;
+            double[] frequencyResults;
+            double[] failedPoints;
+            double[] amplitude;
+            double startFrequency;
+            double stopFrequency;
+            double resultsp;
+            double result;
+            int points;
+            int i;
+            int j;
+            List<double> sparm = new List<double>();
+
+            //eNA.SCPI.SENSe.FREQuency.STARt.Query(out startFrequency);
+            //eNA.SCPI.SENSe.FREQuency.STOP.Query(out stopFrequency);
+            eNA.SCPI.SENSe.SWEep.POINts.Query(out points);
+            //eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, sParameterTB.Text);
+            //eNA.SCPI.CALCulate.PARameter.SELect.Command(1u);
+            eNA.SCPI.FORMat.DATA.Command("ASCii");
+            eNA.SCPI.SENSe.FREQuency.DATA.QueryAsciiReal(1, out frequencyResults);
+            eNA.SCPI.CALCulate.SELected.DATA.FDATa.QueryAsciiReal(1, out results);
+            eNA.SCPI.CALCulate.SELected.LIMit.REPort.DATA.QueryAsciiReal(1, out failedPoints);
+            double cutOffFrequency = failedPoints[0];
+            eNA.SCPI.CALCulate.SELected.FUNCtion.DATA.QueryAsciiReal(1, out amplitude);
+            double maxAmplitude = amplitude[0];
+
+            DateTime time = DateTime.Now;
+
+            string createTable =
+                @"CREATE TABLE IF NOT EXISTS 'Sparameter'( 'ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,`Frequency` REAL, 'SParameter' REAL)";
+            string createTrendTable =
+                @"CREATE TABLE IF NOT EXISTS 'Trend' ('ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 'TimeCaptured' TEXT,'CutOffFrequency' REAL,'MaximumAmplitude' REAL)";
+            try
+            {
+                myConnection = new SQLiteConnection("Data Source = database.sqlite3");
+                if (!File.Exists("database.sqlite3"))
+                {
+                    SQLiteConnection.CreateFile("database.sqlite3");
+                    using (myConnection = new SQLiteConnection("Data Source = database.sqlite3"))
+                    {
+                        using (SQLiteCommand myCommand = new SQLiteCommand(myConnection))
+                        {
+                            OpenDbConnection();
+                            myCommand.Prepare();
+                            myCommand.CommandText = createTable;
+                            myCommand.CommandText = createTrendTable;
+                            myCommand.ExecuteNonQuery();
+                            CloseDbConnection();
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Please close database before you write to it");
+            }
+
+            using (myConnection = new SQLiteConnection("Data Source = database.sqlite3"))
+            {
+                using (SQLiteCommand myCommand = new SQLiteCommand(myConnection))
+                {
+                    try
+                    {
+                        OpenDbConnection();
+
+
+                        for (i = 0; (i <= (results.Length) - 2); i = (i + 2))
+                        {
+                            resultsp = results.ElementAt(i);
+                            sparm.Add(resultsp);
+                        }
+
+                        for (j = 0; j < points; j++)
+                        {
+                            result = sparm.ElementAt(j);
+                            frequency = frequencyResults.ElementAt(j);
+                            myCommand.CommandText = "CREATE TABLE IF NOT EXISTS 'Sparameter'( 'ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,`Frequency` REAL, 'SParameter' REAL)";
+                            myCommand.Prepare();
+                            myCommand.ExecuteNonQuery();
+                            myCommand.CommandText = "INSERT INTO sparameter(Frequency,SParameter) values(" +frequency +"," + result + ")";
+                            myCommand.Prepare();
+                            myCommand.ExecuteNonQuery();
+                        }
+                       
+                        myCommand.CommandText = "INSERT INTO trend(TimeCaptured,CutOffFrequency,MaximumAmplitude) values(@timevalue,@cutOffFrequencyvalue, @maxAmplitudevalue)";
+                        myCommand.Prepare();
+                        myCommand.Parameters.AddWithValue("@timevalue", time);
+                        myCommand.Parameters.AddWithValue("@cutOffFrequencyvalue", cutOffFrequency);
+                        myCommand.Parameters.AddWithValue("@maxAmplitudevalue", maxAmplitude);
+                        myCommand.ExecuteNonQuery();
+
+                    }
+                    catch (SQLiteException e)
+                    {
+                        MessageBox.Show(e.Message);
+                    }
+                    finally
+                    {
+                        CloseDbConnection();
+                        MessageBox.Show("DB saved");
+                    }
+
+                }
+            }
+        }
+
+        private void OpenDbConnection()
+        {
+            if (myConnection.State != System.Data.ConnectionState.Open)
+            {
+                myConnection.Open();
+            }
+        }
+        private void CloseDbConnection()
+        {
+            if (myConnection.State != System.Data.ConnectionState.Closed)
+            {
+                myConnection.Close();
+            }
+        }
+
+        private void Test()
+        {
+            
+            string sqlLiteFileName = "sample.sqlite";
+
+            // Source: https://www.youtube.com/watch?v=APVit-pynwQ&t=5
+
+            string createQuery =
+                @"CREATE TABLE IF NOT EXISTS
+                    [Mytable] (
+                    [Id]     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    [NAME]   NVARCHAR(2048) NULL,
+                    [GENDER] NVARCHAR(2048) NULL)";
+
+            SQLiteConnection.CreateFile("sample.sqlite");
+
+            using (SQLiteConnection conn = new SQLiteConnection("data source =" + sqlLiteFileName))
+            {
+                using (SQLiteCommand cmd = new SQLiteCommand(conn))
+                {
+                    conn.Open();
+                    cmd.CommandText = createQuery;
+                    cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = "INSERT INTO MyTable(Name, Gender)values('alex','male')";
+                    cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = "INSERT INTO MyTable(Name, Gender)values('diane','female')";
+                    cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = "select * from MyTable";
+
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string output = reader["Name"].ToString() + ':' + reader["Gender"].ToString();
+
+                           // textBox2.Text += output + '\n';
+                        }
+                    }
+                }
+
+            
+        }
+
+    }
+
+
     }
 }
  

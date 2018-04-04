@@ -50,17 +50,18 @@
             this.stopFrequencyTB = new System.Windows.Forms.TextBox();
             this.startFrequencyTB = new System.Windows.Forms.TextBox();
             this.TPLimitTest = new System.Windows.Forms.TabPage();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.GBLimitLine = new System.Windows.Forms.GroupBox();
+            this.TBLimitStartAmplitude = new System.Windows.Forms.TextBox();
+            this.lLimitAmplitude = new System.Windows.Forms.Label();
             this.lMeasurementDuration = new System.Windows.Forms.Label();
             this.CBBeeperWarning = new System.Windows.Forms.CheckBox();
-            this.GBLimitLine1 = new System.Windows.Forms.GroupBox();
+            this.GBPeakSearch = new System.Windows.Forms.GroupBox();
             this.TBLimit1StopFrequency = new System.Windows.Forms.TextBox();
-            this.TBLimit1StartAmplitude = new System.Windows.Forms.TextBox();
             this.TBLimit1StartFrequency = new System.Windows.Forms.TextBox();
             this.lLimit1StopFrequency = new System.Windows.Forms.Label();
-            this.lLimit1StartAmplitude = new System.Windows.Forms.Label();
             this.lLimit1StartFrequency = new System.Windows.Forms.Label();
-            this.ComboBLimitLineType = new System.Windows.Forms.ComboBox();
-            this.lLimitLineType = new System.Windows.Forms.Label();
             this.CBEnableLimitTest = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudInterval)).BeginInit();
             this.TabControl.SuspendLayout();
@@ -68,42 +69,41 @@
             this.GBStimulusSetup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pointsNUD)).BeginInit();
             this.TPLimitTest.SuspendLayout();
-            this.GBLimitLine1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
+            this.GBLimitLine.SuspendLayout();
+            this.GBPeakSearch.SuspendLayout();
             this.SuspendLayout();
             // 
             // bFilePath
             // 
             this.bFilePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bFilePath.Location = new System.Drawing.Point(151, 268);
-            this.bFilePath.Margin = new System.Windows.Forms.Padding(4);
+            this.bFilePath.Location = new System.Drawing.Point(12, 5);
             this.bFilePath.Name = "bFilePath";
-            this.bFilePath.Size = new System.Drawing.Size(36, 33);
+            this.bFilePath.Size = new System.Drawing.Size(27, 27);
             this.bFilePath.TabIndex = 33;
             this.bFilePath.Text = "FP";
             this.toolTip1.SetToolTip(this.bFilePath, "File Path");
             this.bFilePath.UseVisualStyleBackColor = true;
+            this.bFilePath.Click += new System.EventHandler(this.bFilePath_Click);
             // 
             // tbFilePath
             // 
-            this.tbFilePath.Location = new System.Drawing.Point(193, 273);
-            this.tbFilePath.Margin = new System.Windows.Forms.Padding(4);
+            this.tbFilePath.Location = new System.Drawing.Point(44, 9);
             this.tbFilePath.Name = "tbFilePath";
-            this.tbFilePath.Size = new System.Drawing.Size(268, 22);
+            this.tbFilePath.Size = new System.Drawing.Size(340, 20);
             this.tbFilePath.TabIndex = 32;
-            this.tbFilePath.Text = "C:\\Users\\wilattoh\\Documents\\Results.xlsx";
             this.toolTip1.SetToolTip(this.tbFilePath, "Browse path for .txt file");
             // 
-            // nudDuration
+            // nudInterval
             // 
-            this.nudInterval.Location = new System.Drawing.Point(355, 223);
-            this.nudInterval.Margin = new System.Windows.Forms.Padding(4);
+            this.nudInterval.Location = new System.Drawing.Point(218, 188);
             this.nudInterval.Maximum = new decimal(new int[] {
             86400000,
             0,
             0,
             0});
             this.nudInterval.Name = "nudInterval";
-            this.nudInterval.Size = new System.Drawing.Size(75, 22);
+            this.nudInterval.Size = new System.Drawing.Size(71, 20);
             this.nudInterval.TabIndex = 31;
             this.toolTip1.SetToolTip(this.nudInterval, "Interval in seconds");
             this.nudInterval.Value = new decimal(new int[] {
@@ -111,14 +111,12 @@
             0,
             0,
             0});
-            this.nudInterval.ValueChanged += new System.EventHandler(this.nudDuration_ValueChanged);
             // 
             // bStop
             // 
-            this.bStop.Location = new System.Drawing.Point(289, 369);
-            this.bStop.Margin = new System.Windows.Forms.Padding(4);
+            this.bStop.Location = new System.Drawing.Point(218, 266);
             this.bStop.Name = "bStop";
-            this.bStop.Size = new System.Drawing.Size(95, 27);
+            this.bStop.Size = new System.Drawing.Size(71, 22);
             this.bStop.TabIndex = 27;
             this.bStop.Text = "Stop && Exit";
             this.toolTip1.SetToolTip(this.bStop, "Single click to stop and double click to exit");
@@ -127,10 +125,9 @@
             // 
             // bRun
             // 
-            this.bRun.Location = new System.Drawing.Point(289, 323);
-            this.bRun.Margin = new System.Windows.Forms.Padding(4);
+            this.bRun.Location = new System.Drawing.Point(218, 228);
             this.bRun.Name = "bRun";
-            this.bRun.Size = new System.Drawing.Size(95, 28);
+            this.bRun.Size = new System.Drawing.Size(71, 23);
             this.bRun.TabIndex = 26;
             this.bRun.Text = "Run";
             this.toolTip1.SetToolTip(this.bRun, "Greys out whilst measurement is running");
@@ -142,8 +139,8 @@
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(692, 24);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(565, 24);
             this.menuStrip1.TabIndex = 17;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -151,19 +148,21 @@
             // 
             this.TabControl.Controls.Add(this.MeasurementTPage);
             this.TabControl.Controls.Add(this.TPLimitTest);
-            this.TabControl.Location = new System.Drawing.Point(0, 31);
+            this.TabControl.Location = new System.Drawing.Point(0, 25);
+            this.TabControl.Margin = new System.Windows.Forms.Padding(2);
             this.TabControl.Name = "TabControl";
             this.TabControl.SelectedIndex = 0;
-            this.TabControl.Size = new System.Drawing.Size(691, 441);
+            this.TabControl.Size = new System.Drawing.Size(563, 348);
             this.TabControl.TabIndex = 19;
             // 
             // MeasurementTPage
             // 
             this.MeasurementTPage.Controls.Add(this.GBStimulusSetup);
-            this.MeasurementTPage.Location = new System.Drawing.Point(4, 25);
+            this.MeasurementTPage.Location = new System.Drawing.Point(4, 22);
+            this.MeasurementTPage.Margin = new System.Windows.Forms.Padding(2);
             this.MeasurementTPage.Name = "MeasurementTPage";
-            this.MeasurementTPage.Padding = new System.Windows.Forms.Padding(3);
-            this.MeasurementTPage.Size = new System.Drawing.Size(683, 412);
+            this.MeasurementTPage.Padding = new System.Windows.Forms.Padding(2);
+            this.MeasurementTPage.Size = new System.Drawing.Size(555, 322);
             this.MeasurementTPage.TabIndex = 0;
             this.MeasurementTPage.Text = "Stimulus Setup";
             this.MeasurementTPage.UseVisualStyleBackColor = true;
@@ -180,9 +179,11 @@
             this.GBStimulusSetup.Controls.Add(this.label3);
             this.GBStimulusSetup.Controls.Add(this.stopFrequencyTB);
             this.GBStimulusSetup.Controls.Add(this.startFrequencyTB);
-            this.GBStimulusSetup.Location = new System.Drawing.Point(25, 23);
+            this.GBStimulusSetup.Location = new System.Drawing.Point(19, 19);
+            this.GBStimulusSetup.Margin = new System.Windows.Forms.Padding(2);
             this.GBStimulusSetup.Name = "GBStimulusSetup";
-            this.GBStimulusSetup.Size = new System.Drawing.Size(411, 142);
+            this.GBStimulusSetup.Padding = new System.Windows.Forms.Padding(2);
+            this.GBStimulusSetup.Size = new System.Drawing.Size(308, 115);
             this.GBStimulusSetup.TabIndex = 27;
             this.GBStimulusSetup.TabStop = false;
             this.GBStimulusSetup.Text = "Stimulus";
@@ -194,8 +195,8 @@
             0,
             0,
             0});
-            this.pointsNUD.Location = new System.Drawing.Point(332, 65);
-            this.pointsNUD.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pointsNUD.Location = new System.Drawing.Point(249, 53);
+            this.pointsNUD.Margin = new System.Windows.Forms.Padding(2);
             this.pointsNUD.Maximum = new decimal(new int[] {
             100001,
             0,
@@ -207,7 +208,7 @@
             0,
             0});
             this.pointsNUD.Name = "pointsNUD";
-            this.pointsNUD.Size = new System.Drawing.Size(64, 22);
+            this.pointsNUD.Size = new System.Drawing.Size(48, 20);
             this.pointsNUD.TabIndex = 26;
             this.pointsNUD.Value = new decimal(new int[] {
             401,
@@ -218,85 +219,86 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(7, 107);
+            this.label5.Location = new System.Drawing.Point(5, 87);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(87, 17);
+            this.label5.Size = new System.Drawing.Size(65, 13);
             this.label5.TabIndex = 25;
             this.label5.Text = "S Parameter";
             // 
             // sParameterTB
             // 
-            this.sParameterTB.Location = new System.Drawing.Point(111, 102);
-            this.sParameterTB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.sParameterTB.Location = new System.Drawing.Point(83, 83);
+            this.sParameterTB.Margin = new System.Windows.Forms.Padding(2);
             this.sParameterTB.Name = "sParameterTB";
-            this.sParameterTB.Size = new System.Drawing.Size(71, 22);
+            this.sParameterTB.Size = new System.Drawing.Size(54, 20);
             this.sParameterTB.TabIndex = 24;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(239, 72);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(179, 58);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(47, 17);
+            this.label1.Size = new System.Drawing.Size(36, 13);
             this.label1.TabIndex = 17;
             this.label1.Text = "Points";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(239, 29);
+            this.label4.Location = new System.Drawing.Point(179, 24);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(45, 17);
+            this.label4.Size = new System.Drawing.Size(37, 13);
             this.label4.TabIndex = 23;
             this.label4.Text = "IF BW";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(8, 30);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(6, 24);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(38, 17);
+            this.label2.Size = new System.Drawing.Size(29, 13);
             this.label2.TabIndex = 18;
             this.label2.Text = "Start";
             // 
             // ifBWTB
             // 
-            this.ifBWTB.Location = new System.Drawing.Point(332, 22);
-            this.ifBWTB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ifBWTB.Location = new System.Drawing.Point(249, 18);
+            this.ifBWTB.Margin = new System.Windows.Forms.Padding(2);
             this.ifBWTB.Name = "ifBWTB";
-            this.ifBWTB.Size = new System.Drawing.Size(65, 22);
+            this.ifBWTB.Size = new System.Drawing.Size(50, 20);
             this.ifBWTB.TabIndex = 22;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 72);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(6, 58);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(37, 17);
+            this.label3.Size = new System.Drawing.Size(29, 13);
             this.label3.TabIndex = 19;
             this.label3.Text = "Stop";
             // 
             // stopFrequencyTB
             // 
-            this.stopFrequencyTB.Location = new System.Drawing.Point(111, 64);
-            this.stopFrequencyTB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.stopFrequencyTB.Location = new System.Drawing.Point(83, 52);
+            this.stopFrequencyTB.Margin = new System.Windows.Forms.Padding(2);
             this.stopFrequencyTB.Name = "stopFrequencyTB";
-            this.stopFrequencyTB.Size = new System.Drawing.Size(93, 22);
+            this.stopFrequencyTB.Size = new System.Drawing.Size(71, 20);
             this.stopFrequencyTB.TabIndex = 20;
             // 
             // startFrequencyTB
             // 
-            this.startFrequencyTB.Location = new System.Drawing.Point(111, 25);
-            this.startFrequencyTB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.startFrequencyTB.Location = new System.Drawing.Point(83, 20);
+            this.startFrequencyTB.Margin = new System.Windows.Forms.Padding(2);
             this.startFrequencyTB.Name = "startFrequencyTB";
-            this.startFrequencyTB.Size = new System.Drawing.Size(93, 22);
+            this.startFrequencyTB.Size = new System.Drawing.Size(71, 20);
             this.startFrequencyTB.TabIndex = 21;
             // 
             // TPLimitTest
             // 
+            this.TPLimitTest.Controls.Add(this.statusStrip1);
+            this.TPLimitTest.Controls.Add(this.GBLimitLine);
             this.TPLimitTest.Controls.Add(this.bFilePath);
             this.TPLimitTest.Controls.Add(this.tbFilePath);
             this.TPLimitTest.Controls.Add(this.nudInterval);
@@ -304,128 +306,140 @@
             this.TPLimitTest.Controls.Add(this.bStop);
             this.TPLimitTest.Controls.Add(this.bRun);
             this.TPLimitTest.Controls.Add(this.CBBeeperWarning);
-            this.TPLimitTest.Controls.Add(this.GBLimitLine1);
-            this.TPLimitTest.Controls.Add(this.ComboBLimitLineType);
-            this.TPLimitTest.Controls.Add(this.lLimitLineType);
+            this.TPLimitTest.Controls.Add(this.GBPeakSearch);
             this.TPLimitTest.Controls.Add(this.CBEnableLimitTest);
-            this.TPLimitTest.Location = new System.Drawing.Point(4, 25);
+            this.TPLimitTest.Location = new System.Drawing.Point(4, 22);
+            this.TPLimitTest.Margin = new System.Windows.Forms.Padding(2);
             this.TPLimitTest.Name = "TPLimitTest";
-            this.TPLimitTest.Padding = new System.Windows.Forms.Padding(3);
-            this.TPLimitTest.Size = new System.Drawing.Size(683, 412);
+            this.TPLimitTest.Padding = new System.Windows.Forms.Padding(2);
+            this.TPLimitTest.Size = new System.Drawing.Size(555, 322);
             this.TPLimitTest.TabIndex = 1;
             this.TPLimitTest.Text = "Measurement";
             this.TPLimitTest.UseVisualStyleBackColor = true;
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblStatus});
+            this.statusStrip1.Location = new System.Drawing.Point(2, 298);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(551, 22);
+            this.statusStrip1.TabIndex = 35;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(0, 17);
+            // 
+            // GBLimitLine
+            // 
+            this.GBLimitLine.Controls.Add(this.TBLimitStartAmplitude);
+            this.GBLimitLine.Controls.Add(this.lLimitAmplitude);
+            this.GBLimitLine.Location = new System.Drawing.Point(12, 77);
+            this.GBLimitLine.Name = "GBLimitLine";
+            this.GBLimitLine.Size = new System.Drawing.Size(256, 85);
+            this.GBLimitLine.TabIndex = 34;
+            this.GBLimitLine.TabStop = false;
+            this.GBLimitLine.Text = "Limit Line";
+            // 
+            // TBLimitStartAmplitude
+            // 
+            this.TBLimitStartAmplitude.Location = new System.Drawing.Point(81, 21);
+            this.TBLimitStartAmplitude.Margin = new System.Windows.Forms.Padding(2);
+            this.TBLimitStartAmplitude.Name = "TBLimitStartAmplitude";
+            this.TBLimitStartAmplitude.Size = new System.Drawing.Size(58, 20);
+            this.TBLimitStartAmplitude.TabIndex = 1;
+            // 
+            // lLimitAmplitude
+            // 
+            this.lLimitAmplitude.AutoSize = true;
+            this.lLimitAmplitude.Location = new System.Drawing.Point(5, 24);
+            this.lLimitAmplitude.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lLimitAmplitude.Name = "lLimitAmplitude";
+            this.lLimitAmplitude.Size = new System.Drawing.Size(53, 13);
+            this.lLimitAmplitude.TabIndex = 0;
+            this.lLimitAmplitude.Text = "Amplitude";
+            // 
             // lMeasurementDuration
             // 
             this.lMeasurementDuration.AutoSize = true;
-            this.lMeasurementDuration.Location = new System.Drawing.Point(183, 225);
-            this.lMeasurementDuration.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lMeasurementDuration.Location = new System.Drawing.Point(90, 190);
             this.lMeasurementDuration.Name = "lMeasurementDuration";
-            this.lMeasurementDuration.Size = new System.Drawing.Size(144, 17);
+            this.lMeasurementDuration.Size = new System.Drawing.Size(109, 13);
             this.lMeasurementDuration.TabIndex = 30;
             this.lMeasurementDuration.Text = "Measurement Interval";
             // 
             // CBBeeperWarning
             // 
             this.CBBeeperWarning.AutoSize = true;
-            this.CBBeeperWarning.Location = new System.Drawing.Point(479, 17);
+            this.CBBeeperWarning.Location = new System.Drawing.Point(359, 55);
+            this.CBBeeperWarning.Margin = new System.Windows.Forms.Padding(2);
             this.CBBeeperWarning.Name = "CBBeeperWarning";
-            this.CBBeeperWarning.Size = new System.Drawing.Size(181, 21);
+            this.CBBeeperWarning.Size = new System.Drawing.Size(139, 17);
             this.CBBeeperWarning.TabIndex = 7;
             this.CBBeeperWarning.Text = "Enable Beeper Warning";
             this.CBBeeperWarning.UseVisualStyleBackColor = true;
             this.CBBeeperWarning.CheckedChanged += new System.EventHandler(this.CBLoadLimitLineTable_CheckedChanged);
             // 
-            // GBLimitLine1
+            // GBPeakSearch
             // 
-            this.GBLimitLine1.Controls.Add(this.TBLimit1StopFrequency);
-            this.GBLimitLine1.Controls.Add(this.TBLimit1StartAmplitude);
-            this.GBLimitLine1.Controls.Add(this.TBLimit1StartFrequency);
-            this.GBLimitLine1.Controls.Add(this.lLimit1StopFrequency);
-            this.GBLimitLine1.Controls.Add(this.lLimit1StartAmplitude);
-            this.GBLimitLine1.Controls.Add(this.lLimit1StartFrequency);
-            this.GBLimitLine1.Location = new System.Drawing.Point(24, 82);
-            this.GBLimitLine1.Name = "GBLimitLine1";
-            this.GBLimitLine1.Size = new System.Drawing.Size(620, 105);
-            this.GBLimitLine1.TabIndex = 5;
-            this.GBLimitLine1.TabStop = false;
-            this.GBLimitLine1.Text = "Limit Line 1";
+            this.GBPeakSearch.Controls.Add(this.TBLimit1StopFrequency);
+            this.GBPeakSearch.Controls.Add(this.TBLimit1StartFrequency);
+            this.GBPeakSearch.Controls.Add(this.lLimit1StopFrequency);
+            this.GBPeakSearch.Controls.Add(this.lLimit1StartFrequency);
+            this.GBPeakSearch.Location = new System.Drawing.Point(288, 77);
+            this.GBPeakSearch.Margin = new System.Windows.Forms.Padding(2);
+            this.GBPeakSearch.Name = "GBPeakSearch";
+            this.GBPeakSearch.Padding = new System.Windows.Forms.Padding(2);
+            this.GBPeakSearch.Size = new System.Drawing.Size(251, 85);
+            this.GBPeakSearch.TabIndex = 5;
+            this.GBPeakSearch.TabStop = false;
+            this.GBPeakSearch.Text = "Peak Search";
             // 
             // TBLimit1StopFrequency
             // 
-            this.TBLimit1StopFrequency.Location = new System.Drawing.Point(164, 67);
+            this.TBLimit1StopFrequency.Location = new System.Drawing.Point(123, 54);
+            this.TBLimit1StopFrequency.Margin = new System.Windows.Forms.Padding(2);
             this.TBLimit1StopFrequency.Name = "TBLimit1StopFrequency";
-            this.TBLimit1StopFrequency.Size = new System.Drawing.Size(147, 22);
+            this.TBLimit1StopFrequency.Size = new System.Drawing.Size(111, 20);
             this.TBLimit1StopFrequency.TabIndex = 1;
-            // 
-            // TBLimit1StartAmplitude
-            // 
-            this.TBLimit1StartAmplitude.Location = new System.Drawing.Point(455, 29);
-            this.TBLimit1StartAmplitude.Name = "TBLimit1StartAmplitude";
-            this.TBLimit1StartAmplitude.Size = new System.Drawing.Size(129, 22);
-            this.TBLimit1StartAmplitude.TabIndex = 1;
             // 
             // TBLimit1StartFrequency
             // 
-            this.TBLimit1StartFrequency.Location = new System.Drawing.Point(164, 21);
+            this.TBLimit1StartFrequency.Location = new System.Drawing.Point(123, 17);
+            this.TBLimit1StartFrequency.Margin = new System.Windows.Forms.Padding(2);
             this.TBLimit1StartFrequency.Name = "TBLimit1StartFrequency";
-            this.TBLimit1StartFrequency.Size = new System.Drawing.Size(147, 22);
+            this.TBLimit1StartFrequency.Size = new System.Drawing.Size(111, 20);
             this.TBLimit1StartFrequency.TabIndex = 1;
             // 
             // lLimit1StopFrequency
             // 
             this.lLimit1StopFrequency.AutoSize = true;
-            this.lLimit1StopFrequency.Location = new System.Drawing.Point(6, 71);
+            this.lLimit1StopFrequency.Location = new System.Drawing.Point(4, 58);
+            this.lLimit1StopFrequency.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lLimit1StopFrequency.Name = "lLimit1StopFrequency";
-            this.lLimit1StopFrequency.Size = new System.Drawing.Size(108, 17);
+            this.lLimit1StopFrequency.Size = new System.Drawing.Size(82, 13);
             this.lLimit1StopFrequency.TabIndex = 0;
             this.lLimit1StopFrequency.Text = "Stop Frequency";
-            // 
-            // lLimit1StartAmplitude
-            // 
-            this.lLimit1StartAmplitude.AutoSize = true;
-            this.lLimit1StartAmplitude.Location = new System.Drawing.Point(358, 29);
-            this.lLimit1StartAmplitude.Name = "lLimit1StartAmplitude";
-            this.lLimit1StartAmplitude.Size = new System.Drawing.Size(70, 17);
-            this.lLimit1StartAmplitude.TabIndex = 0;
-            this.lLimit1StartAmplitude.Text = "Amplitude";
             // 
             // lLimit1StartFrequency
             // 
             this.lLimit1StartFrequency.AutoSize = true;
-            this.lLimit1StartFrequency.Location = new System.Drawing.Point(6, 29);
+            this.lLimit1StartFrequency.Location = new System.Drawing.Point(4, 24);
+            this.lLimit1StartFrequency.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lLimit1StartFrequency.Name = "lLimit1StartFrequency";
-            this.lLimit1StartFrequency.Size = new System.Drawing.Size(109, 17);
+            this.lLimit1StartFrequency.Size = new System.Drawing.Size(82, 13);
             this.lLimit1StartFrequency.TabIndex = 0;
             this.lLimit1StartFrequency.Text = "Start Frequency";
-            // 
-            // ComboBLimitLineType
-            // 
-            this.ComboBLimitLineType.FormattingEnabled = true;
-            this.ComboBLimitLineType.Items.AddRange(new object[] {
-            "Upper Limit",
-            "Lower Limit"});
-            this.ComboBLimitLineType.Location = new System.Drawing.Point(188, 52);
-            this.ComboBLimitLineType.Name = "ComboBLimitLineType";
-            this.ComboBLimitLineType.Size = new System.Drawing.Size(147, 24);
-            this.ComboBLimitLineType.TabIndex = 4;
-            // 
-            // lLimitLineType
-            // 
-            this.lLimitLineType.AutoSize = true;
-            this.lLimitLineType.Location = new System.Drawing.Point(27, 52);
-            this.lLimitLineType.Name = "lLimitLineType";
-            this.lLimitLineType.Size = new System.Drawing.Size(120, 17);
-            this.lLimitLineType.TabIndex = 3;
-            this.lLimitLineType.Text = "Type of Limit Line";
             // 
             // CBEnableLimitTest
             // 
             this.CBEnableLimitTest.AutoSize = true;
-            this.CBEnableLimitTest.Location = new System.Drawing.Point(24, 17);
+            this.CBEnableLimitTest.Location = new System.Drawing.Point(18, 55);
+            this.CBEnableLimitTest.Margin = new System.Windows.Forms.Padding(2);
             this.CBEnableLimitTest.Name = "CBEnableLimitTest";
-            this.CBEnableLimitTest.Size = new System.Drawing.Size(139, 21);
+            this.CBEnableLimitTest.Size = new System.Drawing.Size(107, 17);
             this.CBEnableLimitTest.TabIndex = 0;
             this.CBEnableLimitTest.Text = "Enable Limit Test";
             this.CBEnableLimitTest.UseVisualStyleBackColor = true;
@@ -433,14 +447,13 @@
             // 
             // ENAForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(692, 475);
+            this.ClientSize = new System.Drawing.Size(565, 374);
             this.Controls.Add(this.TabControl);
             this.Controls.Add(this.menuStrip1);
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ENAForm";
             this.Text = "ENA Measurement";
             this.Load += new System.EventHandler(this.ENAForm_Load);
@@ -452,8 +465,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.pointsNUD)).EndInit();
             this.TPLimitTest.ResumeLayout(false);
             this.TPLimitTest.PerformLayout();
-            this.GBLimitLine1.ResumeLayout(false);
-            this.GBLimitLine1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
+            this.GBLimitLine.ResumeLayout(false);
+            this.GBLimitLine.PerformLayout();
+            this.GBPeakSearch.ResumeLayout(false);
+            this.GBPeakSearch.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -465,15 +482,13 @@
         private System.Windows.Forms.TabControl TabControl;
         private System.Windows.Forms.TabPage MeasurementTPage;
         private System.Windows.Forms.TabPage TPLimitTest;
-        private System.Windows.Forms.GroupBox GBLimitLine1;
+        private System.Windows.Forms.GroupBox GBPeakSearch;
         private System.Windows.Forms.TextBox TBLimit1StopFrequency;
-        private System.Windows.Forms.TextBox TBLimit1StartAmplitude;
+        private System.Windows.Forms.TextBox TBLimitStartAmplitude;
         private System.Windows.Forms.TextBox TBLimit1StartFrequency;
         private System.Windows.Forms.Label lLimit1StopFrequency;
-        private System.Windows.Forms.Label lLimit1StartAmplitude;
+        private System.Windows.Forms.Label lLimitAmplitude;
         private System.Windows.Forms.Label lLimit1StartFrequency;
-        private System.Windows.Forms.ComboBox ComboBLimitLineType;
-        private System.Windows.Forms.Label lLimitLineType;
         private System.Windows.Forms.CheckBox CBEnableLimitTest;
         private System.Windows.Forms.CheckBox CBBeeperWarning;
         private System.Windows.Forms.Button bFilePath;
@@ -493,6 +508,9 @@
         private System.Windows.Forms.TextBox stopFrequencyTB;
         private System.Windows.Forms.TextBox startFrequencyTB;
         private System.Windows.Forms.GroupBox GBStimulusSetup;
+        private System.Windows.Forms.GroupBox GBLimitLine;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel lblStatus;
     }
 }
 

@@ -1,0 +1,13 @@
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA Analysis\bin\Debug\ENA Analysis.exe.config
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA Analysis\bin\Debug\ENA Analysis.exe
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA Analysis\bin\Debug\ENA Analysis.pdb
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA Analysis\bin\Debug\AgENA_E5071_A_11_22.dll
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA Analysis\bin\Debug\AgENA_E5071_A_11_22.xml
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA Analysis\obj\Debug\ENA Analysis.csproj.ResolveComReference.cache
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA Analysis\obj\Debug\ENA_Analysis.Form1.resources
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA Analysis\obj\Debug\ENA_Analysis.Properties.Resources.resources
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA Analysis\obj\Debug\ENA Analysis.csproj.GenerateResource.Cache
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA Analysis\obj\Debug\ENA Analysis.exe
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA Analysis\obj\Debug\ENA Analysis.pdb
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA Analysis\obj\Debug\ENA Analysis.csprojResolveAssemblyReference.cache
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA Analysis\obj\Debug\ENA_Analysis.ENAAnalysisForm.resources
