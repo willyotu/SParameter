@@ -16,6 +16,8 @@ using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Threading;
 using System.Data.SQLite;
+using System.Drawing.Text;
+using Agilent.CommandExpert.ScpiNet.AgENA_E5071_A_11_22.SCPI.DISPlay.ANNotation.FREQuency;
 
 
 namespace ENA
@@ -347,8 +349,8 @@ namespace ENA
                 if (!sendingWorker.CancellationPending)//At each iteration of the loop, check if there is a cancellation request pending 
                 {
                     SParameterMeasurement();
-                    // SaveSParameterExcel();
-                    Database();
+                   // SaveSParameterExcel();
+                   Database();
                    // bRun.Enabled = true;
                     Timing();
                 }
@@ -604,48 +606,74 @@ namespace ENA
         {
             double frequency;
             double[] results;
+            double[] frequencyResults;
             double[] failedPoints;
             double[] maxAmplitude;
             double startFrequency;
             double stopFrequency;
             int points;
             double steps;
-            string createTable = @"CREATE TABLE IF NOT EXISTS 'album' ( `Frequency` TEXT)";
+            string createTable = @"CREATE TABLE IF NOT EXISTS 'SParameter' ( `Frequency` REAL, 'SParameter' REAL,'TimeCaptured' TEXT)";
            
             myConnection = new SQLiteConnection("Data Source = database.sqlite3");
             if (!File.Exists(".database.sqlite3"))
             {
                 SQLiteConnection.CreateFile("database.sqlite3");
             }
+           
             using (myConnection = new SQLiteConnection("Data Source = database.sqlite3"))
             {
                 using (SQLiteCommand myCommand = new SQLiteCommand(myConnection))
                 {
-                    
-
                     OpenDbConnection();
                     myCommand.CommandText = createTable;
                     myCommand.ExecuteNonQuery();
 
-                    
+
                     eNA.SCPI.SENSe.FREQuency.STARt.Query(out startFrequency);
                     eNA.SCPI.SENSe.FREQuency.STOP.Query(out stopFrequency);
                     eNA.SCPI.SENSe.SWEep.POINts.Query(out points);
-
-                    int row;
                     steps = (stopFrequency - startFrequency) / points;
-                    row = 1;
-                   
-                    for (frequency = startFrequency; (frequency <= stopFrequency); frequency = (frequency + steps))
+
+                    eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, SParameter);
+                    eNA.SCPI.CALCulate.PARameter.SELect.Command(1u);
+                    eNA.SCPI.FORMat.DATA.Command("ASCii");
+                    eNA.SCPI.CALCulate.SELected.DATA.FDATa.QueryAsciiReal(1, out results);
+                    eNA.SCPI.SENSe.FREQuency.DATA.QueryAsciiReal(1,out frequencyResults);
+
+                    DateTime time = DateTime.Now;
+                    int i;
+                    List<double> sparm = new List<double>();
+                    for (i = 0; (i <= (results.Length)-2); i = (i + 2))
                     {
-                        row = row + 1;
-                        string insertData = @"INSERT INTO album(Frequency) values(" + frequency + ")";
+                        double resultsp;
+                        resultsp = results.ElementAt(i);
+                        sparm.Add(resultsp);
+                    }
+
+                    int j;
+                    for (j= 0; j<points;j++)
+                    {
+                        double result;
+                        result = sparm.ElementAt(j);
+                        frequency = frequencyResults.ElementAt(j);
+                        
+                        string insertData = @"INSERT INTO sparameter(Frequency,SParameter,TimeCaptured) values(" + frequency + "," + result +"," + "@timevalue)";
+
                         myCommand.CommandText = insertData;
+                        myCommand.Parameters.AddWithValue("@timevalue", time);
                         myCommand.ExecuteNonQuery();
                     }
+    
+
+                    //string insertTimeData = @"INSERT INTO sparameter(TimeCaptured) values(@timevalue)";
+                    //myCommand.CommandText = insertTimeData;
+                    //myCommand.Parameters.AddWithValue("@timevalue", time);
+                    //myCommand.ExecuteNonQuery();
                     CloseDbConnection();
                 }
             }
+
             MessageBox.Show("DB saved");
 
         }
@@ -663,6 +691,8 @@ namespace ENA
                 myConnection.Close();
             }
         }
-    }
+
+        
+}
 }
  
