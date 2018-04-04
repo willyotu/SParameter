@@ -80,6 +80,7 @@ namespace ENA
         private void ENAForm_Load(object sender, EventArgs e)
         {
             MeasurementSetup();
+            SParameterMeasurement();
         }
         
         #region Stimulus Tab
@@ -305,24 +306,7 @@ namespace ENA
             
 
         }
-
-       
-        // Run Button
-        //private void bRun_Click(object sender, EventArgs e)
-        //{
-
-        //    while (!bStopClicked)
-        //    {
-        //        SParameterMeasurement();
-        //        System.Windows.Forms.Application.DoEvents();
-        //        SaveSParameterExcel();
-        //        System.Windows.Forms.Application.DoEvents();
-        //        Timing();
-        //        System.Windows.Forms.Application.DoEvents();
-
-        //    }
-        //}
-
+        
         private void bRun_Click(object sender, EventArgs e)
         {
 
@@ -348,9 +332,10 @@ namespace ENA
             {
                 if (!sendingWorker.CancellationPending)//At each iteration of the loop, check if there is a cancellation request pending 
                 {
-                    SParameterMeasurement();
+                   // SParameterMeasurement();
                    // SaveSParameterExcel();
                    Database();
+                    //Test();
                    // bRun.Enabled = true;
                     Timing();
                 }
@@ -608,75 +593,74 @@ namespace ENA
             double[] results;
             double[] frequencyResults;
             double[] failedPoints;
-            double[] maxAmplitude;
+            double[] amplitude;
             double startFrequency;
             double stopFrequency;
+            double resultsp;
+            double result;
             int points;
-            double steps;
-            string createTable = @"CREATE TABLE IF NOT EXISTS 'SParameter' ( `Frequency` REAL, 'SParameter' REAL,'TimeCaptured' TEXT)";
-           
+            int i;
+            int j;
+            List<double> sparm = new List<double>();
+          
+            eNA.SCPI.SENSe.FREQuency.STARt.Query(out startFrequency);
+            eNA.SCPI.SENSe.FREQuency.STOP.Query(out stopFrequency);
+            eNA.SCPI.SENSe.SWEep.POINts.Query(out points);
+            eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, SParameter);
+            eNA.SCPI.CALCulate.PARameter.SELect.Command(1u);
+            eNA.SCPI.FORMat.DATA.Command("ASCii");
+            eNA.SCPI.CALCulate.SELected.DATA.FDATa.QueryAsciiReal(1, out results);
+            eNA.SCPI.SENSe.FREQuency.DATA.QueryAsciiReal(1, out frequencyResults);
+            eNA.SCPI.CALCulate.SELected.LIMit.REPort.DATA.QueryAsciiReal(1, out failedPoints);
+            double cutOffFrequency = failedPoints[0];
+            eNA.SCPI.CALCulate.SELected.FUNCtion.DATA.QueryAsciiReal(1, out amplitude);
+            double maxAmplitude = amplitude[0];
+            
+            DateTime time = DateTime.Now;
+
+            string createTable = @"CREATE TABLE IF NOT EXISTS 'Sparameter'( 'ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,`Frequency` REAL, 'SParameter' REAL)";
+            string createTrendTable = @"CREATE TABLE IF NOT EXISTS 'Trend' ('ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 'TimeCaptured' TEXT,'CutOffFrequency' REAL,'MaximumAmplitude' REAL)";
+
             myConnection = new SQLiteConnection("Data Source = database.sqlite3");
             if (!File.Exists(".database.sqlite3"))
             {
                 SQLiteConnection.CreateFile("database.sqlite3");
             }
-           
             using (myConnection = new SQLiteConnection("Data Source = database.sqlite3"))
             {
-                using (SQLiteCommand myCommand = new SQLiteCommand(myConnection))
+                using (SQLiteCommand myCommand = new SQLiteCommand( myConnection))
                 {
                     OpenDbConnection();
                     myCommand.CommandText = createTable;
                     myCommand.ExecuteNonQuery();
-
-
-                    eNA.SCPI.SENSe.FREQuency.STARt.Query(out startFrequency);
-                    eNA.SCPI.SENSe.FREQuency.STOP.Query(out stopFrequency);
-                    eNA.SCPI.SENSe.SWEep.POINts.Query(out points);
-                    steps = (stopFrequency - startFrequency) / points;
-
-                    eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, SParameter);
-                    eNA.SCPI.CALCulate.PARameter.SELect.Command(1u);
-                    eNA.SCPI.FORMat.DATA.Command("ASCii");
-                    eNA.SCPI.CALCulate.SELected.DATA.FDATa.QueryAsciiReal(1, out results);
-                    eNA.SCPI.SENSe.FREQuency.DATA.QueryAsciiReal(1,out frequencyResults);
-
-                    DateTime time = DateTime.Now;
-                    int i;
-                    List<double> sparm = new List<double>();
+                    
                     for (i = 0; (i <= (results.Length)-2); i = (i + 2))
                     {
-                        double resultsp;
-                        resultsp = results.ElementAt(i);
-                        sparm.Add(resultsp);
+                       resultsp = results.ElementAt(i);
+                       sparm.Add(resultsp);
                     }
-
-                    int j;
+                    
                     for (j= 0; j<points;j++)
                     {
-                        double result;
-                        result = sparm.ElementAt(j);
-                        frequency = frequencyResults.ElementAt(j);
-                        
-                        string insertData = @"INSERT INTO sparameter(Frequency,SParameter,TimeCaptured) values(" + frequency + "," + result +"," + "@timevalue)";
-
-                        myCommand.CommandText = insertData;
-                        myCommand.Parameters.AddWithValue("@timevalue", time);
-                        myCommand.ExecuteNonQuery();
+                       result = sparm.ElementAt(j);
+                       frequency = frequencyResults.ElementAt(j);
+                       string insertData = @"INSERT INTO sparameter(Frequency,SParameter) values(" + frequency + "," + result+")";
+                       myCommand.CommandText = insertData;
+                       myCommand.ExecuteNonQuery();
                     }
-    
-
-                    //string insertTimeData = @"INSERT INTO sparameter(TimeCaptured) values(@timevalue)";
-                    //myCommand.CommandText = insertTimeData;
-                    //myCommand.Parameters.AddWithValue("@timevalue", time);
-                    //myCommand.ExecuteNonQuery();
-                    CloseDbConnection();
+                    myCommand.CommandText = createTrendTable;
+                    myCommand.ExecuteNonQuery();
+                    string insertTrendData = @"INSERT INTO trend(TimeCaptured,CutOffFrequency,MaximumAmplitude) values(@timevalue,@cutOffFrequencyvalue, @maxAmplitudevalue)";
+                    myCommand.CommandText = insertTrendData;
+                    myCommand.Parameters.AddWithValue("@timevalue", time);
+                    myCommand.Parameters.AddWithValue("@cutOffFrequencyvalue", cutOffFrequency);
+                    myCommand.Parameters.AddWithValue("@maxAmplitudevalue", maxAmplitude);
+                    myCommand.ExecuteNonQuery();
+                   CloseDbConnection();
                 }
             }
-
-            MessageBox.Show("DB saved");
-
-        }
+              MessageBox.Show("DB saved");
+       }
         private void OpenDbConnection()
         {
             if (myConnection.State != System.Data.ConnectionState.Open)
@@ -692,7 +676,55 @@ namespace ENA
             }
         }
 
-        
-}
+        private void Test()
+        {
+            
+            string sqlLiteFileName = "sample.sqlite";
+
+            // Source: https://www.youtube.com/watch?v=APVit-pynwQ&t=5
+
+            string createQuery =
+                @"CREATE TABLE IF NOT EXISTS
+                    [Mytable] (
+                    [Id]     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    [NAME]   NVARCHAR(2048) NULL,
+                    [GENDER] NVARCHAR(2048) NULL)";
+
+            SQLiteConnection.CreateFile("sample.sqlite");
+
+            using (SQLiteConnection conn = new SQLiteConnection("data source =" + sqlLiteFileName))
+            {
+                using (SQLiteCommand cmd = new SQLiteCommand(conn))
+                {
+                    conn.Open();
+                    cmd.CommandText = createQuery;
+                    cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = "INSERT INTO MyTable(Name, Gender)values('alex','male')";
+                    cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = "INSERT INTO MyTable(Name, Gender)values('diane','female')";
+                    cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = "select * from MyTable";
+
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string output = reader["Name"].ToString() + ':' + reader["Gender"].ToString();
+
+                           // textBox2.Text += output + '\n';
+                        }
+                    }
+                }
+
+            
+        }
+
+    }
+
+
+    }
 }
  
