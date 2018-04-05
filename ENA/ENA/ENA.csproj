@@ -83,6 +83,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="databaseform.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="databaseform.Designer.cs">
+      <DependentUpon>databaseform.cs</DependentUpon>
+    </Compile>
     <Compile Include="ENAForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -103,6 +109,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="databaseform.resx">
+      <DependentUpon>databaseform.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ENAForm.resx">
       <DependentUpon>ENAForm.cs</DependentUpon>
     </EmbeddedResource>

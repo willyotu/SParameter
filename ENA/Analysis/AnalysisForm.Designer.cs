@@ -40,6 +40,7 @@
             this.bPlotsOverTime = new System.Windows.Forms.Button();
             this.bPlotOverDay = new System.Windows.Forms.Button();
             this.bPlotOverWeek = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // bFilePath
@@ -163,11 +164,22 @@
             this.bPlotOverWeek.UseVisualStyleBackColor = true;
             this.bPlotOverWeek.Click += new System.EventHandler(this.bPlotOverWeek_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(340, 238);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 13;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // AnalysisForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(516, 326);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.bPlotOverWeek);
             this.Controls.Add(this.bPlotOverDay);
             this.Controls.Add(this.bPlotsOverTime);
@@ -202,6 +214,7 @@
         private System.Windows.Forms.Button bPlotsOverTime;
         private System.Windows.Forms.Button bPlotOverDay;
         private System.Windows.Forms.Button bPlotOverWeek;
+        private System.Windows.Forms.Button button1;
     }
 }
 

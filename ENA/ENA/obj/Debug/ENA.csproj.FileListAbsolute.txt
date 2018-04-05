@@ -42,3 +42,4 @@ C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\bin\Debug\System.Data.SQLi
 C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\bin\Debug\EntityFramework.xml
 C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\bin\Debug\System.Data.SQLite.xml
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\obj\Debug\ENA.databaseform.resources

@@ -63,6 +63,7 @@
             this.lLimit1StopFrequency = new System.Windows.Forms.Label();
             this.lLimit1StartFrequency = new System.Windows.Forms.Label();
             this.CBEnableLimitTest = new System.Windows.Forms.CheckBox();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudInterval)).BeginInit();
             this.TabControl.SuspendLayout();
             this.MeasurementTPage.SuspendLayout();
@@ -297,6 +298,7 @@
             // 
             // TPLimitTest
             // 
+            this.TPLimitTest.Controls.Add(this.button1);
             this.TPLimitTest.Controls.Add(this.statusStrip1);
             this.TPLimitTest.Controls.Add(this.GBLimitLine);
             this.TPLimitTest.Controls.Add(this.bFilePath);
@@ -445,6 +447,16 @@
             this.CBEnableLimitTest.UseVisualStyleBackColor = true;
             this.CBEnableLimitTest.CheckedChanged += new System.EventHandler(this.CBEnableLimitTest_CheckedChanged);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(337, 212);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 36;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // ENAForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -511,6 +523,7 @@
         private System.Windows.Forms.GroupBox GBLimitLine;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
+        private System.Windows.Forms.Button button1;
     }
 }
 

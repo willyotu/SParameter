@@ -11,6 +11,9 @@ using System.Runtime.InteropServices;
 
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Data.SQLite;
+
+
 
 namespace Analysis
 {
@@ -24,7 +27,6 @@ namespace Analysis
         Range oRng;
         string ActWsName;
         string ActAddress;
-
         private Excel.Application xlApp;
         public AnalysisForm()
         {
@@ -346,25 +348,7 @@ namespace Analysis
 
         }
 
-       
-  
-
-        private void ListSheets()
-        {
-            //int index = 0;
-
-            //Microsoft.Office.Tools.Excel.NamedRange NamedRange1 =
-            //    Globals.Sheet1.Controls.AddNamedRange(
-            //    Globals.Sheet1.Range["A1"], "NamedRange1");
-
-            //foreach (Excel.Worksheet displayWorksheet in Globals.ThisWorkbook.Worksheets)
-            //{
-            //    NamedRange1.Offset[index, 0].Value2 = displayWorksheet.Name;
-            //    index++;
-            //}
-        }
-
-        public void PlotsOverTime()
+       public void PlotsOverTime()
         {
       
             Excel.Application xlApp = new Excel.Application();
@@ -689,5 +673,152 @@ namespace Analysis
         {
             PlotOverWeek();
         }
+
+        private List<string> TrendDataList()
+        {
+            SQLiteConnection cnn;
+            string connectionString = null;
+            string sql = null;
+            string data = null;
+            int i = 0;
+            int j = 0;
+          
+            connectionString = "data source=" + @"C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\bin\Debug\database.sqlite3";
+            cnn = new SQLiteConnection(connectionString);
+            cnn.Open();
+            sql = "SELECT * FROM Trend";
+            //using (SQLiteCommand myCommand = new SQLiteCommand(cnn))
+            //{
+            //   myCommand.CommandText = "SELECT * FROM Trend";
+
+            //    SQLiteDataReader = myCommand.ExecuteReader();
+
+            //    myCommand.ExecuteNonQuery();
+
+
+            //demo.Add(data);
+            //demo.GetRange(0, 101);
+            //demo.GetRange(102, 203);
+            //demo.GetRange(204, 305);
+            //demo.GetRange(306, 407);
+            List<string> trendData = new List<string>();
+            SQLiteDataAdapter dscmd = new SQLiteDataAdapter(sql, cnn);
+            DataSet ds = new DataSet();
+            dscmd.Fill(ds);
+          
+            for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
+            {
+                for (j = 0; j <= ds.Tables[0].Columns.Count - 1; j++)
+                {
+                    data = ds.Tables[0].Rows[i].ItemArray[j].ToString();
+                    trendData.Add(data);
+                }
+            }
+            return trendData;
+        }
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            SQLiteConnection cnn;
+            string connectionString = null;
+            string sql = null;
+            string data = null;
+            int i = 0;
+            int j = 0;
+
+            Excel.Application xlApp;
+            Excel.Workbook xlWorkBook;
+            Excel.Worksheet xlWorkSheet;
+            object misValue = System.Reflection.Missing.Value;
+
+            xlApp = new Excel.Application();
+            xlWorkBook = xlApp.Workbooks.Add(misValue);
+            xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+
+            connectionString = "data source="+@"C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\ENA\bin\Debug\database.sqlite3";
+            cnn = new SQLiteConnection(connectionString);
+            cnn.Open();
+            sql = "SELECT * FROM SParameter";
+            SQLiteDataAdapter dscmd = new SQLiteDataAdapter(sql, cnn);
+            DataSet ds = new DataSet();
+            dscmd.Fill(ds);
+
+            for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
+            {
+                for (j = 0; j <= ds.Tables[0].Columns.Count - 1; j++)
+                {
+                    data = ds.Tables[0].Rows[i].ItemArray[j].ToString();
+                    xlWorkSheet.Cells[i + 1, j + 1] = data;
+                }
+            }
+
+            List<string> dem =TrendDataList();
+            
+            int points = Convert.ToInt32(dem.ElementAt(3)); 
+            int rowsExcel = ds.Tables[0].Rows.Count;
+            int loopRuns = rowsExcel / points;
+           
+           
+            for (int k = 0; k < loopRuns ; k++)
+            {
+                int origin = (k*points) + k;
+                
+                int end = origin + points;
+
+                Range oRng;
+                xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+                if (k == 0)
+                {
+                    ChartObjects xlCharts = (Excel.ChartObjects) xlWorkSheet.ChartObjects(Type.Missing);
+                    ChartObject myChart = xlCharts.Add(700, 50, 300, 300);
+                    Chart chart = myChart.Chart;
+                    oRng = xlWorkSheet.Range["A1"+":A" + points + ",B1"+ ":B" + points + ""];
+                    chart.ChartType = XlChartType.xlXYScatterSmoothNoMarkers;
+                    chart.ChartStyle = 7;
+                    chart.ChartWizard(Source: oRng, Title: "SParameter", HasLegend: true);
+                    chart.ChartType = XlChartType.xlLine;
+                    Axis axisS21 = (Axis) chart.Axes(XlAxisType.xlValue);
+                    axisS21.TickLabels.NumberFormat = "#,##0.00";
+                    axisS21.MaximumScale = 20;
+                    axisS21.MinimumScale = -140;
+                    axisS21.HasMajorGridlines = false;
+                    Axis axisCatS21 = (Axis) chart.Axes(XlAxisType.xlCategory);
+                    axisCatS21.TickLabels.NumberFormat = "0.00E+00";
+                    axisCatS21.TickLabelPosition = XlTickLabelPosition.xlTickLabelPositionHigh;
+                }
+                else
+                {
+                    ChartObjects xlCharts = (Excel.ChartObjects)xlWorkSheet.ChartObjects(Type.Missing);
+                    ChartObject myChart = xlCharts.Add(700, 50, 300, 300);
+                    Chart chart = myChart.Chart;
+                    oRng = xlWorkSheet.Range["A" + origin + ":A" + end + ",B" + origin + ":B" + end + ""];
+                    chart.ChartType = XlChartType.xlXYScatterSmoothNoMarkers;
+                    chart.ChartStyle = 7;
+                    chart.ChartWizard(Source: oRng, Title: "SParameter", HasLegend: true);
+                    chart.ChartType = XlChartType.xlLine;
+                    Axis axisS21 = (Axis)chart.Axes(XlAxisType.xlValue);
+                    axisS21.TickLabels.NumberFormat = "#,##0.00";
+                    axisS21.MaximumScale = 20;
+                    axisS21.MinimumScale = -140;
+                    axisS21.HasMajorGridlines = false;
+                    Axis axisCatS21 = (Axis)chart.Axes(XlAxisType.xlCategory);
+                    axisCatS21.TickLabels.NumberFormat = "0.00E+00";
+                    axisCatS21.TickLabelPosition = XlTickLabelPosition.xlTickLabelPositionHigh;
+                }
+
+            }
+
+            
+            xlWorkBook.SaveAs(@"C:\Users\wilattoh\Documents\database.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+            xlWorkBook.Close(true, misValue, misValue);
+            xlApp.Quit();
+
+            ReleaseObject(xlWorkSheet);
+            ReleaseObject(xlWorkBook);
+            ReleaseObject(xlApp);
+
+            MessageBox.Show("Excel file created , you can find the file@ C:\\Users\\wilattoh\\Documents\\database.xls");
+        }
+
+        
     }
 }

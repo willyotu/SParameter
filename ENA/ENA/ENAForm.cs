@@ -514,12 +514,8 @@ namespace ENA
             int i;
             int j;
             List<double> sparm = new List<double>();
-
-            //eNA.SCPI.SENSe.FREQuency.STARt.Query(out startFrequency);
-            //eNA.SCPI.SENSe.FREQuency.STOP.Query(out stopFrequency);
+            
             eNA.SCPI.SENSe.SWEep.POINts.Query(out points);
-            //eNA.SCPI.CALCulate.PARameter.DEFine.Command(1, 1, sParameterTB.Text);
-            //eNA.SCPI.CALCulate.PARameter.SELect.Command(1u);
             eNA.SCPI.FORMat.DATA.Command("ASCii");
             eNA.SCPI.SENSe.FREQuency.DATA.QueryAsciiReal(1, out frequencyResults);
             eNA.SCPI.CALCulate.SELected.DATA.FDATa.QueryAsciiReal(1, out results);
@@ -531,9 +527,9 @@ namespace ENA
             DateTime time = DateTime.Now;
 
             string createTable =
-                @"CREATE TABLE IF NOT EXISTS 'Sparameter'( 'ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,`Frequency` REAL, 'SParameter' REAL)";
+                @"CREATE TABLE IF NOT EXISTS 'Sparameter'(`Frequency` REAL, 'SParameter' REAL)";
             string createTrendTable =
-                @"CREATE TABLE IF NOT EXISTS 'Trend' ('ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 'TimeCaptured' TEXT,'CutOffFrequency' REAL,'MaximumAmplitude' REAL)";
+                @"CREATE TABLE IF NOT EXISTS 'Trend' ('TimeCaptured' TEXT,'CutOffFrequency' REAL,'MaximumAmplitude' REAL, 'Points' INTEGER)";
             try
             {
                 myConnection = new SQLiteConnection("Data Source = database.sqlite3");
@@ -545,7 +541,6 @@ namespace ENA
                         using (SQLiteCommand myCommand = new SQLiteCommand(myConnection))
                         {
                             OpenDbConnection();
-                            myCommand.Prepare();
                             myCommand.CommandText = createTable;
                             myCommand.CommandText = createTrendTable;
                             myCommand.ExecuteNonQuery();
@@ -578,19 +573,18 @@ namespace ENA
                         {
                             result = sparm.ElementAt(j);
                             frequency = frequencyResults.ElementAt(j);
-                            myCommand.CommandText = "CREATE TABLE IF NOT EXISTS 'Sparameter'( 'ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,`Frequency` REAL, 'SParameter' REAL)";
-                            myCommand.Prepare();
+                            myCommand.CommandText = createTable;
                             myCommand.ExecuteNonQuery();
                             myCommand.CommandText = "INSERT INTO sparameter(Frequency,SParameter) values(" +frequency +"," + result + ")";
-                            myCommand.Prepare();
                             myCommand.ExecuteNonQuery();
                         }
-                       
-                        myCommand.CommandText = "INSERT INTO trend(TimeCaptured,CutOffFrequency,MaximumAmplitude) values(@timevalue,@cutOffFrequencyvalue, @maxAmplitudevalue)";
-                        myCommand.Prepare();
+                        myCommand.CommandText = createTrendTable;
+                        myCommand.ExecuteNonQuery();
+                        myCommand.CommandText = "INSERT INTO trend(TimeCaptured,CutOffFrequency,MaximumAmplitude,Points) values(@timevalue,@cutOffFrequencyvalue, @maxAmplitudevalue,@pointsvalue)";
                         myCommand.Parameters.AddWithValue("@timevalue", time);
                         myCommand.Parameters.AddWithValue("@cutOffFrequencyvalue", cutOffFrequency);
                         myCommand.Parameters.AddWithValue("@maxAmplitudevalue", maxAmplitude);
+                        myCommand.Parameters.AddWithValue("@pointsvalue", points);
                         myCommand.ExecuteNonQuery();
 
                     }
@@ -621,6 +615,52 @@ namespace ENA
             {
                 myConnection.Close();
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SQLiteConnection cnn;
+            string connectionString = null;
+            string sql = null;
+            string data = null;
+            int i = 0;
+            int j = 0;
+
+            Excel.Application xlApp;
+            Excel.Workbook xlWorkBook;
+            Excel.Worksheet xlWorkSheet;
+            object misValue = System.Reflection.Missing.Value;
+
+            xlApp = new Excel.Application();
+            xlWorkBook = xlApp.Workbooks.Add(misValue);
+            xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+
+            connectionString = "data source=database.sqlite3";
+            cnn = new SQLiteConnection(connectionString);
+            cnn.Open();
+            sql = "SELECT * FROM SParameter";
+            SQLiteDataAdapter dscmd = new SQLiteDataAdapter(sql, cnn);
+            DataSet ds = new DataSet();
+            dscmd.Fill(ds);
+
+            for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
+            {
+                for (j = 0; j <= ds.Tables[0].Columns.Count - 1; j++)
+                {
+                    data = ds.Tables[0].Rows[i].ItemArray[j].ToString();
+                    xlWorkSheet.Cells[i + 1, j + 1] = data;
+                }
+            }
+
+            xlWorkBook.SaveAs(@"C:\Users\wilattoh\Documents\database.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+            xlWorkBook.Close(true, misValue, misValue);
+            xlApp.Quit();
+
+            ReleaseObject(xlWorkSheet);
+            ReleaseObject(xlWorkBook);
+            ReleaseObject(xlApp);
+
+            MessageBox.Show("Excel file created , you can find the file@ C:\\Users\\wilattoh\\Documents\\database.xls");
         }
 
         private void Test()
@@ -671,7 +711,7 @@ namespace ENA
 
     }
 
-
+       
     }
 }
  

@@ -16,3 +16,8 @@ C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\bin\Debug\System.Data
 C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\bin\Debug\EntityFramework.xml
 C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\bin\Debug\System.Data.SQLite.xml
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\bin\Debug\AgENA_E5071_A_11_22.dll
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\bin\Debug\ENA.exe
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\bin\Debug\stdole.dll
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\bin\Debug\ENA.pdb
+C:\Users\wilattoh\Documents\GitHub\SParameter\ENA\Analysis\bin\Debug\AgENA_E5071_A_11_22.xml
